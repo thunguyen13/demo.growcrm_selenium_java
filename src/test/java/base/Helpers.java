@@ -120,10 +120,8 @@ public class Helpers {
 			waitPageLoad.until(ExpectedConditions.attributeContains(preloaderDiv, "style", "display: none;"));
 		} catch (Throwable error) {
 			// TODO: handle exception
-			//org.testng.Assert.fail("Timeout for wait page load");
 			System.out.println("Timeout for wait page load " + error.getMessage());
 			//Assert.fail("Timeout for wait page load");
-			
 		}
 	}
 
@@ -142,9 +140,9 @@ public class Helpers {
 
 	public Boolean verifyMsgInAlert(By locator, String expectedErrorMsg) {
 		WebElement alertMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
-		//scrollIntoViewElement(errorMsg);
+		
 		String strAlertMsg = alertMsg.getText();
-		//System.out.println("alert mesage: " + strAlertMsg);
+		
 		if (strAlertMsg.equals(expectedErrorMsg)) {
 			return true;
 		}
@@ -154,12 +152,6 @@ public class Helpers {
 	public Boolean verifyMsgsInAlert(By locator, Set<String> expectedMessages) {
 		//Get list of element for message
 		List<WebElement> listAlertMsg = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(locator));
-		
-		//Create a set containing the messages to be verified Set<String>
-		/* 
-		 * expectedMsgSet = new HashSet<String>(); 
-		 * for (String expectedMsg : expectedMessages) { expectedMsgSet.add(expectedMsg); }
-		 */
 		
 		// Compare the size of list messages to expected messages
 		boolean sameSize = listAlertMsg.size() == expectedMessages.size();
@@ -234,15 +226,6 @@ public class Helpers {
 		}
 
 	}
-	
-/*	
-    private Boolean isElementInScrollablePage(WebElement element, WebElement scrollablePage) {
-		return (Boolean) js.executeScript("var eRect = arguments[0].getBoundingClientRect();"
-				+ "var pageRect = arguments[1].getBoundingClientRect();"
-				+ "return (eRect.top >= pageRect.top && eRect.left >= pageRect.left && eRect.bottom <= pageRect.bottom && eRect.right <= pageRect.right);",
-				element, scrollablePage);
-	}
-*/
 	
 	private Boolean isElementInViewPort(WebElement element) {
 		return (Boolean) js.executeScript("var e = arguments[0]," + "eRect = e.getBoundingClientRect(),"
