@@ -13,10 +13,10 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class BaseSetup {
 
-	private static WebDriver driver;
+	private WebDriver driver;
 	
 	// Return driver of this class
-	public static WebDriver getDriver() {
+	public WebDriver getDriver() {
 		System.out.println("Current base setup driver: " + driver);
 		return driver;
 	}

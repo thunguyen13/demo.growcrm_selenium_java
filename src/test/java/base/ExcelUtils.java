@@ -16,8 +16,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 public class ExcelUtils {
-	//private FileInputStream fis;
-	//private FileOutputStream fos;
+
 	private Workbook wb;
 	private Sheet sh;
 	private String excelFilePath;
@@ -105,7 +104,7 @@ public class ExcelUtils {
 		if(cell == null) {
 			return "";
 		}
-		//System.out.println("type at [" + rowNum + ":" + colNum + "]: " + cell.getCellType());
+		
 		switch (cell.getCellType()) {
 			case STRING:
 				return cell.getStringCellValue();
