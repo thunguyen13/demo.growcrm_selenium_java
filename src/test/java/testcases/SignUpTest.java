@@ -1,7 +1,9 @@
 package testcases;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.openqa.selenium.WebDriver;
@@ -12,6 +14,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import com.google.common.base.Supplier;
 
 import base.BaseSetup;
 import base.DataProviderFactory;
@@ -364,37 +368,29 @@ public class SignUpTest extends BaseSetup {
 	public void p_invalid_excel(String first_name, String last_name, String company_name, String email, String password,
 			String confirm_password, String expected_msg) throws InterruptedException {
 
-		System.out.println("expected msg: " + expected_msg);
 		helper.waitForPageLoaded();
 
 		dashboardPage = signUpPage.signUp(first_name, last_name, company_name, email, password, confirm_password);
 
 		if (expected_msg.isEmpty()) {
-
-			if (first_name.isEmpty()) {
-				Assert.assertTrue(signUpPage.verifyErrorFirstname(),
-						"Blank Field - First Name field does not change to Error");
-			}
-			if (last_name.isEmpty()) {
-				Assert.assertTrue(signUpPage.verifyErrorLastname(),
-						"Blank Field - Last Name field does not change to Error");
-			}
-			if (company_name.isEmpty()) {
-				Assert.assertTrue(signUpPage.verifyErrorCompanyname(),
-						"Blank Field - Company Name field does not change to Error");
-			}
-			if (email.isEmpty()) {
-				Assert.assertTrue(signUpPage.verifyErrorEmail(), "Blank Field - Email field does not change to Error");
-			}
-			if (password.isEmpty()) {
-				Assert.assertTrue(signUpPage.verifyErrorPassword(),
-						"Blank Field - Password field does not change to Error");
-			}
-			if (confirm_password.isEmpty()) {
-				Assert.assertTrue(signUpPage.verifyErrorConfirmPwd(),
-						"Blank Field - Confirm Password field does not change to Error");
+			//Using Map for validate blank field
+			Map<String, String> checkFields = new HashMap<String,String>();
+			checkFields.put("First Name", first_name);
+			checkFields.put("Last Name", last_name);
+			checkFields.put("Company Name", company_name);
+			checkFields.put("Email", email);
+			checkFields.put("Password", password);
+			checkFields.put("Confirm Password", confirm_password);
+			for (Map.Entry<String, String> entry : checkFields.entrySet()) {
+				String fieldName = entry.getKey();
+				String fieldValue = entry.getValue();
+				if(fieldValue.isEmpty()) {
+					Assert.assertTrue(signUpPage.verifyErrorField(fieldName),
+							"Blank Field - " + fieldName + " field does not change to Error");
+				}
 			}
 		} else {
+			//Validate error messages match messages in expected_msg
 			String[] message = expected_msg.split(",");
 			Set<String> expected_message = new HashSet<String>(Arrays.asList(message));
 			Assert.assertTrue(signUpPage.verifyAllAlertMessage(expected_message), "Alerts does not match! ");
@@ -405,45 +401,36 @@ public class SignUpTest extends BaseSetup {
 
 	@Test(priority = 102, groups = {
 			"invalid_excel" }, dataProvider = "signUpData_invalid_i", dataProviderClass = DataProviderFactory.class)
-	public void p_invalid_excel_i(String first_name, String last_name, String company_name, String email,
-			String password, String confirm_password, String expected_msg) throws InterruptedException {
+	public void p_invalid_excel_i(String firstName, String lastName, String companyName, String email,
+			String password, String confirmPassword, String expectedMsg) throws InterruptedException {
 
 		helper.waitForPageLoaded();
 
-		dashboardPage = signUpPage.signUp(first_name, last_name, company_name, email, password, confirm_password);
+		dashboardPage = signUpPage.signUp(firstName, lastName, companyName, email, password, confirmPassword);
 
-		if (expected_msg.isEmpty()) {
-
-			if (first_name.isEmpty()) {
-				Assert.assertTrue(signUpPage.verifyErrorFirstname(),
-						"Blank Field - First Name field does not change to Error");
-			}
-			if (last_name.isEmpty()) {
-				Assert.assertTrue(signUpPage.verifyErrorLastname(),
-						"Blank Field - Last Name field does not change to Error");
-			}
-			if (company_name.isEmpty()) {
-				Assert.assertTrue(signUpPage.verifyErrorCompanyname(),
-						"Blank Field - Company Name field does not change to Error");
-			}
-			if (email.isEmpty()) {
-				Assert.assertTrue(signUpPage.verifyErrorEmail(), "Blank Field - Email field does not change to Error");
-			}
-			if (password.isEmpty()) {
-				Assert.assertTrue(signUpPage.verifyErrorPassword(),
-						"Blank Field - Password field does not change to Error");
-			}
-			if (confirm_password.isEmpty()) {
-				Assert.assertTrue(signUpPage.verifyErrorConfirmPwd(),
-						"Blank Field - Confirm Password field does not change to Error");
-			}
+		if (expectedMsg.isEmpty()) {
+			//Using another method for validate blank field
+			validateBlankField("First Name",firstName,signUpPage::verifyErrorFirstname);
+			validateBlankField("Last Name",lastName,signUpPage::verifyErrorLastname);
+			validateBlankField("Company Name",companyName,signUpPage::verifyErrorCompanyname);
+			validateBlankField("Email",email,signUpPage::verifyErrorEmail);
+			validateBlankField("Password",password,signUpPage::verifyErrorPassword);
+			validateBlankField("Confirm Password",confirmPassword,signUpPage::verifyErrorConfirmPwd);
 		} else {
-			String[] message = expected_msg.split(",");
+			//Validate error messages match messages in expected_msg
+			String[] message = expectedMsg.split(",");
 			Set<String> expected_message = new HashSet<String>(Arrays.asList(message));
 			Assert.assertTrue(signUpPage.verifyAllAlertMessage(expected_message), "Alerts does not match! ");
 		}
 
 		Thread.sleep(2000);
+	}
+	
+	private void validateBlankField(String fieldName, String fieldValue, Supplier<Boolean> checkField) {
+		if(fieldValue.isEmpty()) {
+			Assert.assertTrue(checkField.get(),
+					"Blank Field - " + fieldName + " field does not change to Error");
+		}
 	}
 
 	@AfterMethod(alwaysRun = true)
