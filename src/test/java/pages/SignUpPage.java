@@ -1,5 +1,7 @@
 package pages;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.openqa.selenium.By;
@@ -13,17 +15,27 @@ public class SignUpPage {
 	private Helpers helper;
 
 	private By headerText = By.xpath("//h3[@class='box-title m-t-10 text-center']");
-	private By firstnameBox = By.xpath("//input[@id='first_name']");
-	private By lastnameBox = By.xpath("//input[@id='last_name']");
-	private By companyNameBox  = By.xpath("//input[@id='client_company_name']");
-	private By emailBox = By.xpath("//input[@id='email']");
-	private By passwordBox = By.xpath("//input[@id='password']");
-	private By confirmPasswordBox = By.xpath("//input[@id='password_confirmation']");
+	private static By firstnameBox = By.xpath("//input[@id='first_name']");
+	private static By lastnameBox = By.xpath("//input[@id='last_name']");
+	private static By companyNameBox  = By.xpath("//input[@id='client_company_name']");
+	private static By emailBox = By.xpath("//input[@id='email']");
+	private static By passwordBox = By.xpath("//input[@id='password']");
+	private static By confirmPasswordBox = By.xpath("//input[@id='password_confirmation']");
 	private By signUpBtn = By.xpath("//button[@id='signupButton']");
 	
 	private By signInLink = By.xpath("//b[normalize-space()='Sign In']");
 	
 	private By errorAlertMessage = By.xpath("//span[@class='noty_text']/li");
+	
+	private static final Map<String, By> FIELD_LOCATORS = new HashMap<>();
+	static {
+	    FIELD_LOCATORS.put("First Name", firstnameBox);
+	    FIELD_LOCATORS.put("Last Name", lastnameBox);
+	    FIELD_LOCATORS.put("Company Name", companyNameBox);
+	    FIELD_LOCATORS.put("Email", emailBox);
+	    FIELD_LOCATORS.put("Password", passwordBox);
+	    FIELD_LOCATORS.put("Confirm Password", confirmPasswordBox);
+	}
 
 	public SignUpPage(WebDriver driver) {
 		// TODO Auto-generated constructor stub
@@ -84,6 +96,11 @@ public class SignUpPage {
 	
 	public Boolean verifyErrorConfirmPwd() {
 		return helper.verifyErrorField(confirmPasswordBox);
+	}
+	
+	public Boolean verifyErrorField(String fieldName) {
+		By locator = FIELD_LOCATORS.get(fieldName);
+		return locator!= null && helper.verifyErrorField(locator);
 	}
 	
 	public Boolean verifySignInLink() {
