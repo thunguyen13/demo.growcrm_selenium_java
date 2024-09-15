@@ -61,9 +61,8 @@ public class ReportListener implements ITestListener{
 		String arrayData = Arrays.toString(result.getParameters());
 		String message = String.format("%s %s %s <br> %s", getTestName(result),arrayData," is failed. <br> Reason: ",result.getThrowable().toString());
 		WebDriver driver = getCurrentDriver(result);
-		ExtentTestManager.addScreenshot(Status.FAIL, message, driver);
 		
-		CaptureHelper.screenshotCapture(driver, result);
+		ExtentTestManager.addScreenshot(Status.FAIL, message, driver);
 	}
 	
 	@Override

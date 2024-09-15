@@ -18,17 +18,13 @@ public class ExtentTestManager {
 	static ExtentReports extentReport = ExtentReportManager.getExtentReports();
 	
 	public synchronized static ExtentTest saveToReport(String testName, String desc) {
+		// Get id of the current thread
 		Integer id = (int) Thread.currentThread().getId();
-		if(extentTestMap.get(id) == null) {
-			// Create a test for the current test case
-			ExtentTest test = extentReport.createTest(testName, desc);
-			// Put the current test into map
-			extentTestMap.put(id, test);
-			return test;
-		} else {
-			// return the existed test in map
-			return extentTestMap.get(id);
-		}
+		// Create a test for the current test case
+		ExtentTest test = extentReport.createTest(testName, desc);
+		// Put the current test into map
+		extentTestMap.put(id, test);
+		return test;
 	}
 	
 	public static ExtentTest getTest() {

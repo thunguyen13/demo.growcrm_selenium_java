@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+import com.aventstack.extentreports.reporter.configuration.Theme;
 
 public class ExtentReportManager {
 	private static final ExtentReports extentReports = new ExtentReports();
@@ -14,6 +15,7 @@ public class ExtentReportManager {
 		ExtentSparkReporter reporter = new ExtentSparkReporter("./././output/reports/extentReports_" + datetime + ".html");
 		// Set the name of the report
 		reporter.config().setReportName("Extent Reports");
+		reporter.config().setTheme(Theme.DARK);
 		// Attach reporter into extentReports to extentReports knows that it needs to write the report in the format provided by ExtentSparkReporter.
 		extentReports.attachReporter(reporter);
 		// Add system info
