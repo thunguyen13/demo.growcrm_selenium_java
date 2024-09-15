@@ -1,10 +1,12 @@
-package base;
+package base.setup;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
 
 import org.testng.annotations.DataProvider;
+
+import base.helpers.ExcelHelper;
 
 public class DataProviderFactory {
 
@@ -59,7 +61,7 @@ public class DataProviderFactory {
 	@DataProvider(name = "signUpData_invalid")
 	public Object[][] dataTest_signUpData_invalid() throws FileNotFoundException, IOException{
 		Object[][] data;
-		ExcelUtils excel = new ExcelUtils();
+		ExcelHelper excel = new ExcelHelper();
 		excel.setExcelFile(signUp_filePath, "invalid");
 		data = excel.getExcelDataArray();
 		return data;
@@ -68,7 +70,7 @@ public class DataProviderFactory {
 	@DataProvider(name = "signUpData_invalid_i")
 	public Iterator<Object[]> dataTest_signUpData_invalid_i() throws FileNotFoundException, IOException{
 		Iterator<Object[]> data;
-		ExcelUtils excel = new ExcelUtils();
+		ExcelHelper excel = new ExcelHelper();
 		excel.setExcelFile(signUp_filePath, "invalid");
 		data = excel.getExcelDataIterator();
 		return data;

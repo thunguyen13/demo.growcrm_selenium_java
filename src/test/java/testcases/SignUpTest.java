@@ -17,15 +17,16 @@ import org.testng.annotations.Test;
 
 import com.google.common.base.Supplier;
 
-import base.BaseSetup;
-import base.DataProviderFactory;
-import base.Helpers;
-import base.TestListener;
+import base.helpers.Helpers;
+import base.listeners.ReportListener;
+import base.setup.BaseSetup;
+import base.setup.DataProviderFactory;
 import pages.DashboardPage;
 import pages.SignInPage;
 import pages.SignUpPage;
 
-@Listeners(TestListener.class)
+//@Listeners(base.listeners.TestListener.class)
+@Listeners(ReportListener.class)
 public class SignUpTest extends BaseSetup {
 
 	private WebDriver driver;
@@ -365,7 +366,7 @@ public class SignUpTest extends BaseSetup {
 
 	@Test(priority = 101, groups = {
 			"invalid_excel" }, dataProvider = "signUpData_invalid", dataProviderClass = DataProviderFactory.class)
-	public void p_invalid_excel(String first_name, String last_name, String company_name, String email, String password,
+	public void f_invalid_excel(String first_name, String last_name, String company_name, String email, String password,
 			String confirm_password, String expected_msg) throws InterruptedException {
 
 		helper.waitForPageLoaded();
@@ -401,7 +402,7 @@ public class SignUpTest extends BaseSetup {
 
 	@Test(priority = 102, groups = {
 			"invalid_excel" }, dataProvider = "signUpData_invalid_i", dataProviderClass = DataProviderFactory.class)
-	public void p_invalid_excel_i(String firstName, String lastName, String companyName, String email,
+	public void f_invalid_excel_i(String firstName, String lastName, String companyName, String email,
 			String password, String confirmPassword, String expectedMsg) throws InterruptedException {
 
 		helper.waitForPageLoaded();

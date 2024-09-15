@@ -1,4 +1,4 @@
-package base;
+package base.helpers;
 
 import static org.monte.media.FormatKeys.EncodingKey;
 import static org.monte.media.FormatKeys.FrameRateKey;
@@ -108,7 +108,7 @@ public class CaptureHelper extends ScreenRecorder{
 		String timestamp = LocalTime.now().format(DateTimeFormatter.ofPattern("HHmmss"));
 		String directoryPath = "././output/screenshot/" + date;
 		Path directory = Paths.get(directoryPath);
-		String methodNameAndInvocationCount = result.getMethod().getMethodName() + result.getMethod().getCurrentInvocationCount();
+		String methodNameAndInvocationCount = result.getMethod().getMethodName() + "_" + result.getMethod().getCurrentInvocationCount();
 		String fileName = methodNameAndInvocationCount + "_" + timestamp + ".png";
 		Path desFile = directory.resolve(fileName);
 		
