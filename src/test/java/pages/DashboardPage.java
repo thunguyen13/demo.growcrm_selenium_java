@@ -3,8 +3,7 @@ package pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
-
-import base.Helpers;
+import base.helpers.Helpers;
 
 public class DashboardPage {
 	

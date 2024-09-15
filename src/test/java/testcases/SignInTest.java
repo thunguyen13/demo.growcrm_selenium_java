@@ -7,9 +7,9 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import base.BaseSetup;
-import base.DataProviderFactory;
-import base.Helpers;
+import base.helpers.Helpers;
+import base.setup.BaseSetup;
+import base.setup.DataProviderFactory;
 import pages.DashboardPage;
 import pages.ForgotPasswordPage;
 import pages.SignInPage;

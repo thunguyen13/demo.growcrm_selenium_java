@@ -1,4 +1,4 @@
-package base;
+package base.listeners;
 
 import java.awt.AWTException;
 import java.io.IOException;
@@ -6,6 +6,9 @@ import java.io.IOException;
 import org.openqa.selenium.WebDriver;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
+
+import base.helpers.CaptureHelper;
+import base.setup.BaseSetup;
 
 public class TestListener implements ITestListener{
 	
