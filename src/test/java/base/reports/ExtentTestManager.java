@@ -21,7 +21,7 @@ public class ExtentTestManager {
 		// Get id of the current thread
 		Integer id = (int) Thread.currentThread().getId();
 		// Create a test for the current test case
-		ExtentTest test = extentReport.createTest(testName, desc);
+		ExtentTest test = extentReport.createTest("Thread " + id + "_" + testName, desc);
 		// Put the current test into map
 		extentTestMap.put(id, test);
 		return test;

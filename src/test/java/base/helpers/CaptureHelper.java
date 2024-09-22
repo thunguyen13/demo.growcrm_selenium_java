@@ -22,10 +22,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 import org.monte.media.Format;
 import org.monte.media.FormatKeys.MediaType;
@@ -37,6 +33,8 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
+
+import base.utils.StampUtil;
 
 public class CaptureHelper extends ScreenRecorder{
 	
@@ -64,7 +62,7 @@ public class CaptureHelper extends ScreenRecorder{
 		}
 		
 		//Generate file name with date, time, extension
-		String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HHmmss"));
+		String dateTime = StampUtil.getCurrentDateTimestamp();
 		String extension = Registry.getInstance().getExtension(fileFormat);
 		String fileName = String.format("%s_%d_%s.%s", name, count,dateTime,extension);
 		return new File(movieFolder,fileName);
@@ -72,7 +70,8 @@ public class CaptureHelper extends ScreenRecorder{
 	
 	public static CaptureHelper getScreenRecorder(ITestNGMethod method) throws IOException, AWTException {
 		//Set up folder for recorded video
-		File folder = new File("././output/record/");
+		String folderPath = "././output/record/" + StampUtil.getCurrentDatestamp();
+		File folder = new File(folderPath);
 		
 		//Get screen dimensions to define screen size for the record
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -104,8 +103,8 @@ public class CaptureHelper extends ScreenRecorder{
 		File scrFile = screenshot.getScreenshotAs(OutputType.FILE);
 		
 		//Define the path to where the file is saved
-		String date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		String timestamp = LocalTime.now().format(DateTimeFormatter.ofPattern("HHmmss"));
+		String date = StampUtil.getCurrentDatestamp();
+		String timestamp = StampUtil.getCurrentTimeStamp();
 		String directoryPath = "././output/screenshot/" + date;
 		Path directory = Paths.get(directoryPath);
 		String methodNameAndInvocationCount = result.getMethod().getMethodName() + "_" + result.getMethod().getCurrentInvocationCount();
