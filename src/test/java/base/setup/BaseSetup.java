@@ -83,6 +83,7 @@ public class BaseSetup {
 	// Run after this suite case
 	@AfterSuite(alwaysRun = true)
 	public void tearDown() throws InterruptedException {
+		System.out.println("Location of Allure: " + System.getProperty("allure.results.directory"));
 		Thread.sleep(2000);
 		driver.quit();
 	}

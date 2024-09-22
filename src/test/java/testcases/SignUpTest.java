@@ -20,7 +20,8 @@ import com.google.common.base.Supplier;
 import base.helpers.Helpers;
 import base.listeners.ReportListener;
 import base.setup.BaseSetup;
-import base.setup.DataProviderFactory;
+import io.qameta.allure.Description;
+import io.qameta.allure.Story;
 import pages.DashboardPage;
 import pages.SignInPage;
 import pages.SignUpPage;
@@ -65,7 +66,7 @@ public class SignUpTest extends BaseSetup {
 		driver.navigate().to("https://demo.growcrm.io/signup");
 	}
 
-	@Test(priority = 1)
+	@Test
 	public void verifySignUpPage() throws InterruptedException {
 
 		helper.waitForPageLoaded();
@@ -77,7 +78,7 @@ public class SignUpTest extends BaseSetup {
 		Thread.sleep(2000);
 	}
 
-	@Test(priority = 2)
+	@Test
 	public void redirectToSignInPage() throws InterruptedException {
 
 		helper.waitForPageLoaded();
@@ -90,7 +91,7 @@ public class SignUpTest extends BaseSetup {
 		Thread.sleep(2000);
 	}
 
-	@Test(priority = 3, groups = { "invalid" })
+	@Test
 	public void f_blankAllField() throws InterruptedException {
 
 		helper.waitForPageLoaded();
@@ -109,7 +110,7 @@ public class SignUpTest extends BaseSetup {
 		Thread.sleep(2000);
 	}
 
-	@Test(priority = 3, groups = { "invalid" })
+	@Test
 	public void f_blankSpaceFirstLastCompanyName() throws InterruptedException {
 
 		helper.waitForPageLoaded();
@@ -129,7 +130,7 @@ public class SignUpTest extends BaseSetup {
 		Thread.sleep(2000);
 	}
 
-	@Test(priority = 4, groups = { "invalid" })
+	@Test
 	public void f_blankFirstLastCompanyName() throws InterruptedException {
 
 		helper.waitForPageLoaded();
@@ -144,7 +145,7 @@ public class SignUpTest extends BaseSetup {
 		Thread.sleep(2000);
 	}
 
-	@Test(priority = 5, groups = { "invalid", "invalidEmail" })
+	@Test
 	public void f_lackofDomainEmail() throws InterruptedException {
 
 		helper.waitForPageLoaded();
@@ -160,7 +161,7 @@ public class SignUpTest extends BaseSetup {
 		Thread.sleep(2000);
 	}
 
-	@Test(priority = 6, groups = { "invalid", "invalidEmail" })
+	@Test
 	public void f_lackofNameEmail() throws InterruptedException {
 
 		helper.waitForPageLoaded();
@@ -176,7 +177,7 @@ public class SignUpTest extends BaseSetup {
 		Thread.sleep(2000);
 	}
 
-	@Test(priority = 7, groups = { "invalid", "invalidEmail" })
+	@Test
 	public void f_blankspaceEmail() throws InterruptedException {
 
 		helper.waitForPageLoaded();
@@ -193,7 +194,7 @@ public class SignUpTest extends BaseSetup {
 		Thread.sleep(2000);
 	}
 
-	@Test(priority = 8, groups = { "invalid", "invalidEmail" })
+	@Test
 	public void f_invalidEmail() throws InterruptedException {
 
 		helper.waitForPageLoaded();
@@ -209,7 +210,7 @@ public class SignUpTest extends BaseSetup {
 		Thread.sleep(2000);
 	}
 
-	@Test(priority = 9, groups = { "invalid", "invalidEmail" })
+	@Test
 	public void f_blankEmail() throws InterruptedException {
 
 		helper.waitForPageLoaded();
@@ -225,7 +226,7 @@ public class SignUpTest extends BaseSetup {
 		Thread.sleep(2000);
 	}
 
-	@Test(priority = 10, groups = { "invalid", "invalidEmail" })
+	@Test
 	public void f_existedEmail() throws InterruptedException {
 
 		helper.waitForPageLoaded();
@@ -241,7 +242,7 @@ public class SignUpTest extends BaseSetup {
 		Thread.sleep(2000);
 	}
 
-	@Test(priority = 11, groups = { "invalid", "invalidPwd", "invalidConfirmPwd" })
+	@Test
 	public void f_blankPasswordConfirmPwd() throws InterruptedException {
 
 		helper.waitForPageLoaded();
@@ -253,7 +254,7 @@ public class SignUpTest extends BaseSetup {
 		Thread.sleep(2000);
 	}
 
-	@Test(priority = 12, groups = { "invalid", "invalidPwd" })
+	@Test
 	public void f_passwordLessThan6Chars() throws InterruptedException {
 
 		helper.waitForPageLoaded();
@@ -265,7 +266,7 @@ public class SignUpTest extends BaseSetup {
 		Thread.sleep(2000);
 	}
 
-	@Test(priority = 13, groups = { "invalid", "invalidPwd" })
+	@Test
 	public void f_password6BlankSpace() throws InterruptedException {
 
 		helper.waitForPageLoaded();
@@ -280,7 +281,9 @@ public class SignUpTest extends BaseSetup {
 		Thread.sleep(2000);
 	}
 
-	@Test(priority = 14, groups = { "invalid", "invalidConfirmPwd" })
+	@Description("Test to verify error message appears with invalid data")
+	@Story("Invalid data")
+	@Test
 	public void f_notMatchPasswordConfirmPwd() throws InterruptedException {
 
 		helper.waitForPageLoaded();
@@ -297,7 +300,7 @@ public class SignUpTest extends BaseSetup {
 		Thread.sleep(2000);
 	}
 
-	@Test(priority = 15, groups = { "invalid", "invalidConfirmPwd" })
+	@Test
 	public void f_blankConfirmPwd() throws InterruptedException {
 
 		helper.waitForPageLoaded();
@@ -309,7 +312,7 @@ public class SignUpTest extends BaseSetup {
 		Thread.sleep(2000);
 	}
 
-	@Test(priority = 16, groups = { "valid" })
+	@Test
 	public void p_minimunValidData() throws InterruptedException {
 
 		helper.waitForPageLoaded();
@@ -322,7 +325,7 @@ public class SignUpTest extends BaseSetup {
 		Thread.sleep(2000);
 	}
 
-	@Test(priority = 17, groups = { "valid" })
+	@Test
 	public void p_blankspaceBeforeAfterEmail() throws InterruptedException {
 
 		helper.waitForPageLoaded();
@@ -336,7 +339,7 @@ public class SignUpTest extends BaseSetup {
 		Thread.sleep(2000);
 	}
 
-	@Test(priority = 18, groups = { "valid" })
+	@Test
 	public void p_specialChars() throws InterruptedException {
 
 		helper.waitForPageLoaded();
@@ -350,7 +353,7 @@ public class SignUpTest extends BaseSetup {
 		Thread.sleep(2000);
 	}
 
-	@Test(priority = 19, groups = { "valid" })
+	@Test
 	public void p_validAllFields() throws InterruptedException {
 
 		helper.waitForPageLoaded();
@@ -364,8 +367,9 @@ public class SignUpTest extends BaseSetup {
 		Thread.sleep(2000);
 	}
 
-	@Test(priority = 101, groups = {
-			"invalid_excel" }, dataProvider = "signUpData_invalid", dataProviderClass = DataProviderFactory.class)
+	@Description("Test to verify error message appears with invalid data in array")
+	@Story("Invalid data")
+	@Test
 	public void f_invalid_excel(String first_name, String last_name, String company_name, String email, String password,
 			String confirm_password, String expected_msg) throws InterruptedException {
 
@@ -390,18 +394,22 @@ public class SignUpTest extends BaseSetup {
 							"Blank Field - " + fieldName + " field does not change to Error");
 				}
 			}
+			Thread.sleep(2000);
 		} else {
 			//Validate error messages match messages in expected_msg
 			String[] message = expected_msg.split(",");
 			Set<String> expected_message = new HashSet<String>(Arrays.asList(message));
 			Assert.assertTrue(signUpPage.verifyAllAlertMessage(expected_message), "Alerts does not match! ");
+			Thread.sleep(2000);
 		}
 
 		Thread.sleep(2000);
 	}
 
-	@Test(priority = 102, groups = {
-			"invalid_excel" }, dataProvider = "signUpData_invalid_i", dataProviderClass = DataProviderFactory.class)
+	
+	@Description("Test to verify error message appears with invalid data in iterator")
+	@Story("Invalid data")
+	@Test
 	public void f_invalid_excel_i(String firstName, String lastName, String companyName, String email,
 			String password, String confirmPassword, String expectedMsg) throws InterruptedException {
 
