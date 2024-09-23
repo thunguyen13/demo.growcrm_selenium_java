@@ -20,6 +20,7 @@ import com.google.common.base.Supplier;
 import base.helpers.Helpers;
 import base.listeners.ReportListener;
 import base.setup.BaseSetup;
+import base.setup.DataProviderFactory;
 import io.qameta.allure.Description;
 import io.qameta.allure.Story;
 import pages.DashboardPage;
@@ -367,9 +368,9 @@ public class SignUpTest extends BaseSetup {
 		Thread.sleep(2000);
 	}
 
+	@Test(dataProvider = "signUpData_invalid", dataProviderClass = DataProviderFactory.class)
 	@Description("Test to verify error message appears with invalid data in array")
 	@Story("Invalid data")
-	@Test
 	public void f_invalid_excel(String first_name, String last_name, String company_name, String email, String password,
 			String confirm_password, String expected_msg) throws InterruptedException {
 
@@ -409,7 +410,7 @@ public class SignUpTest extends BaseSetup {
 	
 	@Description("Test to verify error message appears with invalid data in iterator")
 	@Story("Invalid data")
-	@Test
+	@Test(dataProvider = "signUpData_invalid_i", dataProviderClass = DataProviderFactory.class)
 	public void f_invalid_excel_i(String firstName, String lastName, String companyName, String email,
 			String password, String confirmPassword, String expectedMsg) throws InterruptedException {
 
