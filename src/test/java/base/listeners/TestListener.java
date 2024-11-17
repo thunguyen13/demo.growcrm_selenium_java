@@ -3,12 +3,11 @@ package base.listeners;
 import java.awt.AWTException;
 import java.io.IOException;
 
-import org.openqa.selenium.WebDriver;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 
 import base.helpers.CaptureHelper;
-import base.setup.BaseSetup;
+import base.setup.DriverManager;
 
 public class TestListener implements ITestListener{
 	
@@ -46,18 +45,7 @@ public class TestListener implements ITestListener{
 	}
 	
 	private void screenshot(ITestResult result) {
-		//Get the test class instance currently being executed
-		Object testClass = result.getInstance();
-		//Get driver of the current class
-		WebDriver driver = null;
-		try {
-			driver = ((BaseSetup) testClass).getDriver();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//Perform screenshot
-		CaptureHelper.screenshotCapture(driver, result);
+		CaptureHelper.screenshotCapture(DriverManager.getDriver(), result);
 	}
 	
 	private void stopRecorder() {

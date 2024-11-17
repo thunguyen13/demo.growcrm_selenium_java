@@ -1,40 +1,41 @@
 package testcases;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.openqa.selenium.WebDriver;
-import org.testng.Assert;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import com.google.common.base.Supplier;
 
-import base.helpers.Helpers;
+import base.helpers.ActionKeys;
 import base.listeners.ReportListener;
 import base.setup.BaseSetup;
 import base.setup.DataProviderFactory;
+import base.setup.DriverManager;
 import io.qameta.allure.Description;
 import io.qameta.allure.Story;
 import pages.DashboardPage;
 import pages.SignInPage;
 import pages.SignUpPage;
 
-//@Listeners(base.listeners.TestListener.class)
 @Listeners(ReportListener.class)
 public class SignUpTest extends BaseSetup {
+	
+	private static int testCaseCounter = 0;
 
-	private WebDriver driver;
 	private SignUpPage signUpPage;
+	
 	private SignInPage signInPage;
-	private Helpers helper;
 	private DashboardPage dashboardPage;
 
 	private String firstRequired = "first name is required";
@@ -46,335 +47,270 @@ public class SignUpTest extends BaseSetup {
 	private String passwordRequired = "password is required";
 	private String confirmPasswordInvalid = "confirm password does not match";
 	private String successSignUp = "Welcome to your new project dashboard";
-
-	private static int testCaseCounter = 0;
-
+	
+	@Parameters({ "isParallel" })
 	@BeforeClass(alwaysRun = true)
-	public void setUpForTest() {
-		driver = getDriver();
-		System.out.println("Sign Up driver: " + driver);
-		helper = new Helpers(driver);
-		signUpPage = new SignUpPage(driver);
+	public void setUpForTest(@Optional("true") boolean isParallel) {
+		if (!isParallel) {
+			System.out.println("Sign Up driver (no parallel): " + DriverManager.getDriver());
+			signUpPage = new SignUpPage();
+		}
 	}
-
-//	@BeforeGroups(groups = { "invalidPwd" })
-//	public void beforeGroups() {
-//		System.out.println("Before groups run");
-//	}
-
+	
+	@Parameters({ "isParallel" })
 	@BeforeMethod(alwaysRun = true)
-	public void beforeStart1Case() {
-		driver.navigate().to("https://demo.growcrm.io/signup");
+	public void beforeStart1Case(@Optional("true") boolean isParallel) {
+		if (isParallel) {
+			System.out.println("Sign Up driver (parallel): " + DriverManager.getDriver());
+			signUpPage = new SignUpPage();
+		}
+		
+		ActionKeys.openURL("https://demo.growcrm.io/signup");
 	}
 
 	@Test
-	public void verifySignUpPage() throws InterruptedException {
+	public void verifySignUpPage() {
 
-		helper.waitForPageLoaded();
+		ActionKeys.verifyTrue(signUpPage.verifyPageTitle(), "Verify the Sign Up page's title", "Sign Up Page's title does not match");
+		ActionKeys.verifyTrue(signUpPage.verifyPageHeader(), "Verify the Sign Up page's header", "Sign Up Page's header does not macth");
+		ActionKeys.verifyTrue(signUpPage.verifySignInLink(), "Verify the sign in link does exist on the sign up page", "Sign In Link does not match");
 
-		Assert.assertTrue(signUpPage.verifyPageTitle(), "Sign Up Page's title does not match");
-		Assert.assertTrue(signUpPage.verifyPageHeader(), "Sign Up Page's header does not macth");
-		Assert.assertTrue(signUpPage.verifySignInLink(), "Sign In Link does not match");
-
-		Thread.sleep(2000);
+		ActionKeys.sleep(2);
 	}
 
 	@Test
-	public void redirectToSignInPage() throws InterruptedException {
-
-		helper.waitForPageLoaded();
+	public void redirectToSignInPage() {
 
 		signInPage = signUpPage.goToSignInPage();
 
-		Assert.assertTrue(signInPage.verifyPageTitle(), "Sign In page's title is not as expected");
-		Assert.assertTrue(signInPage.verifyPageHeader(), "Sign In page's header does not match - Wrong redirect");
+		ActionKeys.verifyTrue(signInPage.verifyPageTitle(), "Verify that open the Sign In page", "Sign In page's title is not as expected - Wrong redirect");
+		ActionKeys.verifyTrue(signInPage.verifyPageHeader(), "Verify the Sign In page's header", "Sign In page's header does not match - Wrong redirect");
 
-		Thread.sleep(2000);
+		ActionKeys.sleep(2);
 	}
 
 	@Test
-	public void f_blankAllField() throws InterruptedException {
-
-		helper.waitForPageLoaded();
-
+	public void f_blankAllField() {
+		
 		signUpPage.signUp("", "", "", "", "", "");
 
-		Assert.assertTrue(signUpPage.verifyErrorFirstname(), "Blank Field - First Name field does not change to Error");
-		Assert.assertTrue(signUpPage.verifyErrorLastname(), "Blank Field - Last Name field does not change to Error");
-		Assert.assertTrue(signUpPage.verifyErrorCompanyname(),
-				"Blank Field - Company Name field does not change to Error");
-		Assert.assertTrue(signUpPage.verifyErrorEmail(), "Blank Field - Email field does not change to Error");
-		Assert.assertTrue(signUpPage.verifyErrorPassword(), "Blank Field - Password field does not change to Error");
-		Assert.assertTrue(signUpPage.verifyErrorConfirmPwd(),
-				"Blank Field - Confirm Password field does not change to Error");
+		ActionKeys.verifyTrue(signUpPage.verifyErrorFirstname(), "Blank Field - First Name field does not change to Error");
+		ActionKeys.verifyTrue(signUpPage.verifyErrorLastname(), "Blank Field - Last Name field does not change to Error");
+		ActionKeys.verifyTrue(signUpPage.verifyErrorCompanyname(), "Blank Field - Company Name field does not change to Error");
+		ActionKeys.verifyTrue(signUpPage.verifyErrorEmail(), "Blank Field - Email field does not change to Error");
+		ActionKeys.verifyTrue(signUpPage.verifyErrorPassword(), "Blank Field - Password field does not change to Error");
+		ActionKeys.verifyTrue(signUpPage.verifyErrorConfirmPwd(), "Blank Field - Confirm Password field does not change to Error");
 
-		Thread.sleep(2000);
+		ActionKeys.sleep(2);
 	}
 
 	@Test
-	public void f_blankSpaceFirstLastCompanyName() throws InterruptedException {
-
-		helper.waitForPageLoaded();
-
+	public void f_blankSpaceFirstLastCompanyName() {
+		
 		signUpPage.signUp(" ", " ", " ", "client_test@demo.com", "123456", "123456");
 
-		// String[] firstLastCompanyRequired =
-		// {firstRequired,lastRequired,companyNameRequired};
-		Set<String> firstLastCompanyRequired = new HashSet<String>();
+		// String[] firstLastCompanyRequired = {firstRequired,lastRequired,companyNameRequired};
+		List<String> firstLastCompanyRequired = new ArrayList<String>();
 		firstLastCompanyRequired.add(firstRequired);
 		firstLastCompanyRequired.add(lastRequired);
 		firstLastCompanyRequired.add(companyNameRequired);
 
-		Assert.assertTrue(signUpPage.verifyAllAlertMessage(firstLastCompanyRequired),
-				"All error messages are not found!");
+		ActionKeys.verifyTrue(signUpPage.verifyAllAlertMessage(firstLastCompanyRequired), "All error messages are not found!");
 
-		Thread.sleep(2000);
+		ActionKeys.sleep(2);
 	}
 
 	@Test
-	public void f_blankFirstLastCompanyName() throws InterruptedException {
-
-		helper.waitForPageLoaded();
+	public void f_blankFirstLastCompanyName() {
 
 		signUpPage.signUp("", "", "", "client_test@demo.com", "123456", "123456");
 
-		Assert.assertTrue(signUpPage.verifyErrorFirstname(), "Blank Field - First Name field does not change to Error");
-		Assert.assertTrue(signUpPage.verifyErrorLastname(), "Blank Field - Last Name field does not change to Error");
-		Assert.assertTrue(signUpPage.verifyErrorCompanyname(),
-				"Blank Field - Company Name field does not change to Error");
+		ActionKeys.verifyTrue(signUpPage.verifyErrorFirstname(), "Blank Field - First Name field does not change to Error");
+		ActionKeys.verifyTrue(signUpPage.verifyErrorLastname(), "Blank Field - Last Name field does not change to Error");
+		ActionKeys.verifyTrue(signUpPage.verifyErrorCompanyname(), "Blank Field - Company Name field does not change to Error");
 
-		Thread.sleep(2000);
+		ActionKeys.sleep(2);
 	}
 
 	@Test
-	public void f_lackofDomainEmail() throws InterruptedException {
-
-		helper.waitForPageLoaded();
+	public void f_lackofDomainEmail() {
 
 		signUpPage.signUp("Tester", "Demo", "Learning AutoTest", "client_test@", "123456", "123456");
-
-		// String[] invalidEmail = {emailInvalid};
-		Set<String> invalidEmail = new HashSet<String>();
+		
+		List<String> invalidEmail = new ArrayList<String>();
 		invalidEmail.add(emailInvalid);
+		ActionKeys.verifyTrue(signUpPage.verifyAllAlertMessage(invalidEmail), "Inavlid Email");
 
-		Assert.assertTrue(signUpPage.verifyAllAlertMessage(invalidEmail), "Inavlid Email");
-
-		Thread.sleep(2000);
+		ActionKeys.sleep(2);
 	}
 
 	@Test
-	public void f_lackofNameEmail() throws InterruptedException {
-
-		helper.waitForPageLoaded();
+	public void f_lackofNameEmail() {
 
 		signUpPage.signUp("Tester", "Demo", "Learning AutoTest", "@example.com", "123456", "123456");
 
-		// String[] invalidEmail = {emailInvalid};
-		Set<String> invalidEmail = new HashSet<String>();
+		List<String> invalidEmail = new ArrayList<String>();
 		invalidEmail.add(emailInvalid);
+		ActionKeys.verifyTrue(signUpPage.verifyAllAlertMessage(invalidEmail), "Inavlid Email");
 
-		Assert.assertTrue(signUpPage.verifyAllAlertMessage(invalidEmail), "Inavlid Email");
-
-		Thread.sleep(2000);
+		ActionKeys.sleep(2);
 	}
 
 	@Test
-	public void f_blankspaceEmail() throws InterruptedException {
-
-		helper.waitForPageLoaded();
+	public void f_blankspaceEmail() {
 
 		signUpPage.signUp("Tester", "Demo", "Learning AutoTest", " ", "123456", "123456");
 
-		// String[] invalidEmail = {emailInvalid,emailRequired};
-		Set<String> invalidEmail = new HashSet<String>();
+		List<String> invalidEmail = new ArrayList<String>();
 		invalidEmail.add(emailInvalid);
 		invalidEmail.add(emailRequired);
+		ActionKeys.verifyTrue(signUpPage.verifyAllAlertMessage(invalidEmail), "Inavlid Email");
 
-		Assert.assertTrue(signUpPage.verifyAllAlertMessage(invalidEmail), "Inavlid Email");
-
-		Thread.sleep(2000);
+		ActionKeys.sleep(2);
 	}
 
 	@Test
-	public void f_invalidEmail() throws InterruptedException {
-
-		helper.waitForPageLoaded();
+	public void f_invalidEmail() {
 
 		signUpPage.signUp("Tester", "Demo", "Learning AutoTest", "client.com", "123456", "123456");
 
-		// String[] invalidEmail = {emailInvalid};
-		Set<String> invalidEmail = new HashSet<String>();
+		List<String> invalidEmail = new ArrayList<String>();
 		invalidEmail.add(emailInvalid);
+		ActionKeys.verifyTrue(signUpPage.verifyAllAlertMessage(invalidEmail), "Inavlid Email");
 
-		Assert.assertTrue(signUpPage.verifyAllAlertMessage(invalidEmail), "Inavlid Email");
-
-		Thread.sleep(2000);
+		ActionKeys.sleep(2);
 	}
 
 	@Test
-	public void f_blankEmail() throws InterruptedException {
-
-		helper.waitForPageLoaded();
+	public void f_blankEmail() {
 
 		signUpPage.signUp("Tester", "Demo", "Learning AutoTest", "", "123456", "123456");
 
-		// String[] invalidEmail = {emailRequired};
-		// Set<String> invalidEmail = new HashSet<String>();
-		// invalidEmail.add(emailRequired);
+		ActionKeys.verifyTrue(signUpPage.verifyErrorEmail(), "Blank Email");
 
-		Assert.assertTrue(signUpPage.verifyErrorEmail(), "Blank Email");
-
-		Thread.sleep(2000);
+		ActionKeys.sleep(2);
 	}
 
 	@Test
-	public void f_existedEmail() throws InterruptedException {
-
-		helper.waitForPageLoaded();
+	public void f_existedEmail() {
 
 		signUpPage.signUp("Tester", "Demo", "Learning AutoTest", "mike@example.com", "123456", "123456");
 
-		// String[] invalidEmail = {emailExisted};
-		Set<String> invalidEmail = new HashSet<String>();
+		List<String> invalidEmail = new ArrayList<String>();
 		invalidEmail.add(emailExisted);
+		ActionKeys.verifyTrue(signUpPage.verifyAllAlertMessage(invalidEmail), "Existed Email");
 
-		Assert.assertTrue(signUpPage.verifyAllAlertMessage(invalidEmail), "Existed Email");
-
-		Thread.sleep(2000);
+		ActionKeys.sleep(2);
 	}
 
 	@Test
-	public void f_blankPasswordConfirmPwd() throws InterruptedException {
-
-		helper.waitForPageLoaded();
+	public void f_blankPasswordConfirmPwd() {
 
 		signUpPage.signUp("Tester", "Demo", "Learning AutoTest", "client_test@example.com", "", "");
 
-		Assert.assertTrue(signUpPage.verifyErrorPassword(), "Invalid Password");
+		ActionKeys.verifyTrue(signUpPage.verifyErrorPassword(), "Invalid Password");
 
-		Thread.sleep(2000);
+		ActionKeys.sleep(2);
 	}
 
 	@Test
-	public void f_passwordLessThan6Chars() throws InterruptedException {
-
-		helper.waitForPageLoaded();
+	public void f_passwordLessThan6Chars() {
 
 		signUpPage.signUp("Tester", "Demo", "Learning AutoTest", "client_test@example.com", "12345", "12345");
 
-		Assert.assertTrue(signUpPage.verifyErrorPassword(), "Invalid Password");
+		ActionKeys.verifyTrue(signUpPage.verifyErrorPassword(), "Invalid Password");
 
-		Thread.sleep(2000);
+		ActionKeys.sleep(2);
 	}
 
 	@Test
-	public void f_password6BlankSpace() throws InterruptedException {
-
-		helper.waitForPageLoaded();
+	public void f_password6BlankSpace() {
 
 		signUpPage.signUp("Tester", "Demo", "Learning AutoTest", "client_test@example.com", "      ", "      ");
 
-		Set<String> invalidPwd = new HashSet<String>();
+		List<String> invalidPwd = new ArrayList<String>();
 		invalidPwd.add(passwordRequired);
+		ActionKeys.verifyTrue(signUpPage.verifyAllAlertMessage(invalidPwd), "Existed Email");
 
-		Assert.assertTrue(signUpPage.verifyAllAlertMessage(invalidPwd), "Existed Email");
-
-		Thread.sleep(2000);
+		ActionKeys.sleep(2);
 	}
 
 	@Description("Test to verify error message appears with invalid data")
 	@Story("Invalid data")
 	@Test
-	public void f_notMatchPasswordConfirmPwd() throws InterruptedException {
-
-		helper.waitForPageLoaded();
+	public void f_notMatchPasswordConfirmPwd() {
 
 		signUpPage.signUp("Tester", "Demo", "Learning AutoTest", "client_test@example.com", "123456", "123457");
 
-		// Assert.assertTrue(signUpPage.verifyErrorConfirmPwd(), "Invalid Confirm
-		// Password");
-		Set<String> invalidConfirmPwd = new HashSet<String>();
+		List<String> invalidConfirmPwd = new ArrayList<String>();
 		invalidConfirmPwd.add(confirmPasswordInvalid);
+		ActionKeys.verifyTrue(signUpPage.verifyAllAlertMessage(invalidConfirmPwd), "Invalid Confirm Password!");
 
-		Assert.assertTrue(signUpPage.verifyAllAlertMessage(invalidConfirmPwd), "Invalid Confirm Password!");
-
-		Thread.sleep(2000);
+		ActionKeys.sleep(2);
 	}
 
 	@Test
-	public void f_blankConfirmPwd() throws InterruptedException {
-
-		helper.waitForPageLoaded();
+	public void f_blankConfirmPwd() {
 
 		signUpPage.signUp("Tester", "Demo", "Learning AutoTest", "client_test@example.com", "123456", "");
 
-		Assert.assertTrue(signUpPage.verifyErrorConfirmPwd(), "Invalid Confirm Password");
+		ActionKeys.verifyTrue(signUpPage.verifyErrorConfirmPwd(), "Invalid Confirm Password");
 
-		Thread.sleep(2000);
+		ActionKeys.sleep(2);
 	}
 
 	@Test
-	public void p_minimunValidData() throws InterruptedException {
-
-		helper.waitForPageLoaded();
+	public void p_minimumValidData() {
 
 		dashboardPage = signUpPage.signUp("A", "B", "D", "t@e.c", "123456", "123456");
 
-		Assert.assertTrue(dashboardPage.verifySignUpSuccess(successSignUp), "Alert does not match. Sign Up Failed!");
-		Assert.assertTrue(dashboardPage.verifyPageTitle(), "Dashboard Page title does not match");
+		ActionKeys.verifyTrue(dashboardPage.verifySignUpSuccess(successSignUp), "Alert does not match. Sign Up Failed!");
+		ActionKeys.verifyTrue(dashboardPage.verifyPageTitle(), "Dashboard Page title does not match");
 
-		Thread.sleep(2000);
+		ActionKeys.sleep(2);
 	}
 
 	@Test
-	public void p_blankspaceBeforeAfterEmail() throws InterruptedException {
-
-		helper.waitForPageLoaded();
+	public void p_blankspaceBeforeAfterEmail() {
 
 		dashboardPage = signUpPage.signUp("Tester", "Demo", "Learning AutoTest", " client_test@example.com ", "123456",
 				"123456");
 
-		Assert.assertTrue(dashboardPage.verifySignUpSuccess(successSignUp), "Alert does not match. Sign Up Failed!");
-		Assert.assertTrue(dashboardPage.verifyPageTitle(), "Dashboard Page title does not match");
+		ActionKeys.verifyTrue(dashboardPage.verifySignUpSuccess(successSignUp), "Alert does not match. Sign Up Failed!");
+		ActionKeys.verifyTrue(dashboardPage.verifyPageTitle(), "Dashboard Page title does not match");
 
-		Thread.sleep(2000);
+		ActionKeys.sleep(2);
 	}
 
 	@Test
-	public void p_specialChars() throws InterruptedException {
-
-		helper.waitForPageLoaded();
+	public void p_specialChars() {
 
 		dashboardPage = signUpPage.signUp("Tester!", "Demo@", "Learning# AutoTest$", "client_test_1@example.com",
 				"%123456", "%123456");
 
-		Assert.assertTrue(dashboardPage.verifySignUpSuccess(successSignUp), "Alert does not match. Sign Up Failed!");
-		Assert.assertTrue(dashboardPage.verifyPageTitle(), "Dashboard Page title does not match");
+		ActionKeys.verifyTrue(dashboardPage.verifySignUpSuccess(successSignUp), "Alert does not match. Sign Up Failed!");
+		ActionKeys.verifyTrue(dashboardPage.verifyPageTitle(), "Dashboard Page title does not match");
 
-		Thread.sleep(2000);
+		ActionKeys.sleep(2);
 	}
 
 	@Test
-	public void p_validAllFields() throws InterruptedException {
-
-		helper.waitForPageLoaded();
+	public void p_validAllFields() {
 
 		dashboardPage = signUpPage.signUp("Tester", "Demo", "Learning AutoTest", "client_test_2@example.com", "123456",
 				"123456");
 
-		Assert.assertTrue(dashboardPage.verifySignUpSuccess(successSignUp), "Alert does not match. Sign Up Failed!");
-		Assert.assertTrue(dashboardPage.verifyPageTitle(), "Dashboard Page title does not match");
+		ActionKeys.verifyTrue(dashboardPage.verifySignUpSuccess(successSignUp), "Alert does not match. Sign Up Failed!");
+		ActionKeys.verifyTrue(dashboardPage.verifyPageTitle(), "Dashboard Page title does not match");
 
-		Thread.sleep(2000);
+		ActionKeys.sleep(2);
 	}
 
 	@Test(dataProvider = "signUpData_invalid", dataProviderClass = DataProviderFactory.class)
 	@Description("Test to verify error message appears with invalid data in array")
 	@Story("Invalid data")
 	public void f_invalid_excel(String first_name, String last_name, String company_name, String email, String password,
-			String confirm_password, String expected_msg) throws InterruptedException {
-
-		helper.waitForPageLoaded();
+			String confirm_password, String expected_msg) {
 
 		dashboardPage = signUpPage.signUp(first_name, last_name, company_name, email, password, confirm_password);
 
@@ -391,20 +327,20 @@ public class SignUpTest extends BaseSetup {
 				String fieldName = entry.getKey();
 				String fieldValue = entry.getValue();
 				if(fieldValue.isEmpty()) {
-					Assert.assertTrue(signUpPage.verifyErrorField(fieldName),
+					ActionKeys.verifyTrue(signUpPage.verifyErrorField(fieldName),
 							"Blank Field - " + fieldName + " field does not change to Error");
 				}
 			}
-			Thread.sleep(2000);
+			ActionKeys.sleep(2);
 		} else {
 			//Validate error messages match messages in expected_msg
 			String[] message = expected_msg.split(",");
-			Set<String> expected_message = new HashSet<String>(Arrays.asList(message));
-			Assert.assertTrue(signUpPage.verifyAllAlertMessage(expected_message), "Alerts does not match! ");
-			Thread.sleep(2000);
+			List<String> expected_message = new ArrayList<String>(Arrays.asList(message));
+			ActionKeys.verifyTrue(signUpPage.verifyAllAlertMessage(expected_message), "Alerts does not match! ");
+			ActionKeys.sleep(2);
 		}
 
-		Thread.sleep(2000);
+		ActionKeys.sleep(2);
 	}
 
 	
@@ -412,9 +348,7 @@ public class SignUpTest extends BaseSetup {
 	@Story("Invalid data")
 	@Test(dataProvider = "signUpData_invalid_i", dataProviderClass = DataProviderFactory.class)
 	public void f_invalid_excel_i(String firstName, String lastName, String companyName, String email,
-			String password, String confirmPassword, String expectedMsg) throws InterruptedException {
-
-		helper.waitForPageLoaded();
+			String password, String confirmPassword, String expectedMsg) {
 
 		dashboardPage = signUpPage.signUp(firstName, lastName, companyName, email, password, confirmPassword);
 
@@ -429,16 +363,16 @@ public class SignUpTest extends BaseSetup {
 		} else {
 			//Validate error messages match messages in expected_msg
 			String[] message = expectedMsg.split(",");
-			Set<String> expected_message = new HashSet<String>(Arrays.asList(message));
-			Assert.assertTrue(signUpPage.verifyAllAlertMessage(expected_message), "Alerts does not match! ");
+			List<String> expected_message = new ArrayList<String>(Arrays.asList(message));
+			ActionKeys.verifyTrue(signUpPage.verifyAllAlertMessage(expected_message), "Alerts does not match! ");
 		}
 
-		Thread.sleep(2000);
+		ActionKeys.sleep(2);
 	}
 	
 	private void validateBlankField(String fieldName, String fieldValue, Supplier<Boolean> checkField) {
 		if(fieldValue.isEmpty()) {
-			Assert.assertTrue(checkField.get(),
+			ActionKeys.verifyTrue(checkField.get(),
 					"Blank Field - " + fieldName + " field does not change to Error");
 		}
 	}
