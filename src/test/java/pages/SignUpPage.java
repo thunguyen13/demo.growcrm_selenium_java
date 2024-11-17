@@ -1,18 +1,14 @@
 package pages;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 
-import base.helpers.Helpers;
+import base.helpers.ActionKeys;
 
 public class SignUpPage {
-
-	private WebDriver driver;
-	private Helpers helper;
 
 	private By headerText = By.xpath("//h3[@class='box-title m-t-10 text-center']");
 	private static By firstnameBox = By.xpath("//input[@id='first_name']");
@@ -21,7 +17,7 @@ public class SignUpPage {
 	private static By emailBox = By.xpath("//input[@id='email']");
 	private static By passwordBox = By.xpath("//input[@id='password']");
 	private static By confirmPasswordBox = By.xpath("//input[@id='password_confirmation']");
-	private By signUpBtn = By.xpath("//button[@id='signupButton']");
+	private static By signUpBtn = By.xpath("//button[@id='signupButton']");
 	
 	private By signInLink = By.xpath("//b[normalize-space()='Sign In']");
 	
@@ -36,81 +32,79 @@ public class SignUpPage {
 	    FIELD_LOCATORS.put("Password", passwordBox);
 	    FIELD_LOCATORS.put("Confirm Password", confirmPasswordBox);
 	}
-
-	public SignUpPage(WebDriver driver) {
+	
+	public SignUpPage() {
 		// TODO Auto-generated constructor stub
-		this.driver = driver;
-		helper = new Helpers(driver);
 	}
 	
 	public DashboardPage signUp(String firstname, String lastname, String companyName, String email, String password, String confirmPwd) {
-		helper.setText(firstnameBox, firstname);
-		helper.setText(lastnameBox, lastname);
-		helper.setText(companyNameBox, companyName);
-		helper.setText(emailBox, email);
-		helper.setText(passwordBox, password);
-		helper.setText(confirmPasswordBox, confirmPwd);
-		helper.clickElement(signUpBtn);
+		ActionKeys.setText(firstnameBox, firstname);
+		ActionKeys.setText(lastnameBox, lastname);
+		ActionKeys.setText(companyNameBox, companyName);
+		ActionKeys.setText(emailBox, email);
+		ActionKeys.setText(passwordBox, password);
+		ActionKeys.setText(confirmPasswordBox, confirmPwd);
+		ActionKeys.clickElement(signUpBtn);
 		
-		return new DashboardPage(driver);
+		return new DashboardPage();
 	}
 
 	public Boolean verifyPageTitle() {
 		String titleContains = "ABC Inc";
-		return helper.verifyPageTitle(titleContains);
+		return ActionKeys.verifyPageTitle(titleContains);
 	}
 
 	public Boolean verifyPageHeader() {
 		String headerExpected = "Create New Account";
-		return helper.verifyText(headerText,headerExpected);
+		return ActionKeys.verifyText(headerText,headerExpected);
 	}
 	
 	public Boolean verifyAlertMessage(String msg) {
 		String expectedErrorMsg = msg;
-		return helper.verifyMsgInAlert(errorAlertMessage, expectedErrorMsg);
+		return ActionKeys.verifyMsgInAlert(errorAlertMessage, expectedErrorMsg);
 	}
 	
-	public Boolean verifyAllAlertMessage(Set<String> expectedMsgs) {
-		return helper.verifyMsgsInAlert(errorAlertMessage, expectedMsgs);
+	public Boolean verifyAllAlertMessage(List<String> expectedMsgs) {
+		return ActionKeys.verifyMsgsInAlertUseList(errorAlertMessage, expectedMsgs);
 	}
 	
 	public Boolean verifyErrorFirstname() {
-		return helper.verifyErrorField(firstnameBox);
+		return ActionKeys.verifyErrorField(firstnameBox);
 	}
 	
 	public Boolean verifyErrorLastname() {
-		return helper.verifyErrorField(lastnameBox);
+		return ActionKeys.verifyErrorField(lastnameBox);
 	}
 	
 	public Boolean verifyErrorCompanyname() {
-		return helper.verifyErrorField(companyNameBox);
+		return ActionKeys.verifyErrorField(companyNameBox);
 	}
 	
 	public Boolean verifyErrorEmail() {
-		return helper.verifyErrorField(emailBox);
+		return ActionKeys.verifyErrorField(emailBox);
 	}
 	
 	public Boolean verifyErrorPassword() {
-		return helper.verifyErrorField(passwordBox);
+		return ActionKeys.verifyErrorField(passwordBox);
 	}
 	
 	public Boolean verifyErrorConfirmPwd() {
-		return helper.verifyErrorField(confirmPasswordBox);
+		return ActionKeys.verifyErrorField(confirmPasswordBox);
 	}
 	
 	public Boolean verifyErrorField(String fieldName) {
 		By locator = FIELD_LOCATORS.get(fieldName);
-		return locator!= null && helper.verifyErrorField(locator);
+		return locator != null && ActionKeys.verifyErrorField(locator);
 	}
 	
 	public Boolean verifySignInLink() {
 		String expectedTextLink = "Sign In";
-		return helper.verifyText(signInLink, expectedTextLink);
+		return ActionKeys.verifyText(signInLink, expectedTextLink);
 	}
 	
 	public SignInPage goToSignInPage() {
-		helper.clickElement(signInLink);
-		return new SignInPage(driver);
+		ActionKeys.clickElement(signInLink);
+		return new SignInPage();
 	}
 
 }

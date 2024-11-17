@@ -48,7 +48,6 @@ public class CaptureHelper extends ScreenRecorder{
 		// TODO Auto-generated constructor stub
 		this.name = method.getMethodName();
 		this.count = method.getCurrentInvocationCount();
-		
 	}
 	
 	@Override
@@ -91,7 +90,6 @@ public class CaptureHelper extends ScreenRecorder{
 								new Format(MediaTypeKey,MediaType.VIDEO,EncodingKey,"black",FrameRateKey,Rational.valueOf(30)),
 								null,
 								folder, method);
-		
 	}
 
 	public static void screenshotCapture(WebDriver driver, ITestResult result){
@@ -104,9 +102,10 @@ public class CaptureHelper extends ScreenRecorder{
 		
 		//Define the path to where the file is saved
 		String date = StampUtil.getCurrentDatestamp();
-		String timestamp = StampUtil.getCurrentTimeStamp();
 		String directoryPath = "././output/screenshot/" + date;
 		Path directory = Paths.get(directoryPath);
+		
+		String timestamp = StampUtil.getCurrentTimeStamp();
 		String methodNameAndInvocationCount = result.getMethod().getMethodName() + "_" + result.getMethod().getCurrentInvocationCount();
 		String fileName = methodNameAndInvocationCount + "_" + timestamp + ".png";
 		Path desFile = directory.resolve(fileName);

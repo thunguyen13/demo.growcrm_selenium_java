@@ -4,7 +4,6 @@ import java.awt.AWTException;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.openqa.selenium.WebDriver;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
@@ -15,17 +14,17 @@ import base.helpers.CaptureHelper;
 import base.reports.AllureReportManager;
 import base.reports.ExtentReportManager;
 import base.reports.ExtentTestManager;
-import base.setup.BaseSetup;
+import base.setup.DriverManager;
 import io.qameta.allure.listener.TestLifecycleListener;
 import io.qameta.allure.model.TestResult;
 
 public class ReportListener implements ITestListener, TestLifecycleListener{
 	
-	private CaptureHelper screenRecorder;
+	private static ThreadLocal<CaptureHelper> screenRecorder = new ThreadLocal<>();
 	
 	private void stopRecorder() {
 		try {
-			screenRecorder.stop();
+			screenRecorder.get().stop();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -42,20 +41,6 @@ public class ReportListener implements ITestListener, TestLifecycleListener{
 		return result.getMethod().getDescription() != null ? result.getMethod().getDescription() : getTestName(result);
 	}
 	
-	// Retrieve driver
-	private WebDriver getCurrentDriver(ITestResult result) {
-		Object testClass = result.getInstance();
-		WebDriver driver = null;
-		try {
-			driver = ((BaseSetup) testClass).getDriver();
-		} catch (Exception e) {
-			// TODO: handle exception
-			System.out.println("Fail to get driver!");
-			e.printStackTrace();
-		}
-		return driver;
-	}
-	
 	@Override
 	public void onFinish(ITestContext context) {
 		// TODO Auto-generated method stub
@@ -69,8 +54,9 @@ public class ReportListener implements ITestListener, TestLifecycleListener{
 		//ITestListener.super.onTestStart(result);
 		ExtentTestManager.saveToReport(getTestName(result), getTestDescription(result));
 		try {
-			screenRecorder = CaptureHelper.getScreenRecorder(result.getMethod());
-			screenRecorder.start();
+			CaptureHelper getScreenRecorder = CaptureHelper.getScreenRecorder(result.getMethod());
+			screenRecorder.set(getScreenRecorder);
+			screenRecorder.get().start();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -87,14 +73,13 @@ public class ReportListener implements ITestListener, TestLifecycleListener{
 		
 		String arrayData = Arrays.toString(result.getParameters());
 		String message = String.format("%s %s %s <br> %s", getTestName(result),arrayData," is failed. <br> Reason: ",result.getThrowable().toString());
-		WebDriver driver = getCurrentDriver(result);
 		
 		//Extent Report
-		ExtentTestManager.addScreenshot(Status.FAIL, message, driver);
+		ExtentTestManager.addScreenshot(Status.FAIL, message, DriverManager.getDriver());
 		
 		//Allure report
 		AllureReportManager.saveTextLog(message);
-		AllureReportManager.saveScreenshot(driver);
+		AllureReportManager.saveScreenshot(DriverManager.getDriver());
 		
 		stopRecorder();
 	}
@@ -104,10 +89,9 @@ public class ReportListener implements ITestListener, TestLifecycleListener{
 		// TODO Auto-generated method stub
 		//ITestListener.super.onTestSkipped(result);
 		String message = getTestName(result) + " is skipped.";
-		WebDriver driver = getCurrentDriver(result);
 		
 		//Extent Report
-		ExtentTestManager.logMessage(Status.SKIP, message, driver);
+		ExtentTestManager.logMessage(Status.SKIP, message, DriverManager.getDriver());
 		
 		//Allure report
 		AllureReportManager.saveTextLog(message);
@@ -121,14 +105,14 @@ public class ReportListener implements ITestListener, TestLifecycleListener{
 		//ITestListener.super.onTestSuccess(result);
 		String arrayData = Arrays.toString(result.getParameters());
 		String message = String.format("%s %s %s", getTestName(result),arrayData," is passed.");
-		WebDriver driver = getCurrentDriver(result);
 		
 		//Extent Report
-		ExtentTestManager.addScreenshot(Status.PASS, message, driver);
+		ExtentTestManager.addScreenshot(Status.PASS, message, DriverManager.getDriver());
 		
 		//Allure report
 		AllureReportManager.saveTextLog(message);
-		AllureReportManager.saveScreenshot(driver);
+		AllureReportManager.saveScreenshot(DriverManager.getDriver());
+		
 		stopRecorder();
 	}
 	
@@ -143,7 +127,5 @@ public class ReportListener implements ITestListener, TestLifecycleListener{
 			}
 		}
 	}
-	
-	
 	
 }

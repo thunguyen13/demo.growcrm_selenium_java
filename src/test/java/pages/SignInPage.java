@@ -2,14 +2,10 @@ package pages;
 
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 
-import base.helpers.Helpers;
+import base.helpers.ActionKeys;
 
 public class SignInPage {
-
-	private WebDriver driver;
-	private Helpers helper;
 
 	private By emailBox = By.xpath("//input[@id='email']");
 	private By passwordBox = By.xpath("//input[@id='password']");
@@ -25,74 +21,72 @@ public class SignInPage {
 	private By signUpLink = By.linkText("Sign Up");
 	private By textSignUp = By.xpath("//div[@class='col-sm-12 text-center']");
 
-	public SignInPage(WebDriver driver) {
+	public SignInPage() {
 		// TODO Auto-generated constructor stub
-		this.driver = driver;
-		helper = new Helpers(driver);
 	}
 	
 	public DashboardPage signIn_noRemember(String email, String password) throws InterruptedException {
-		helper.setText(emailBox, email);
-		helper.setText(passwordBox, password);
-		helper.clickElementByJS(rememberMeBox);
-		helper.clickElement(loginBtn);
+		ActionKeys.setText(emailBox, email);
+		ActionKeys.setText(passwordBox, password);
+		ActionKeys.clickElementByJS(rememberMeBox);
+		ActionKeys.clickElement(loginBtn);
 		
-		return new DashboardPage(driver);
+		return new DashboardPage();
 	}
 	
 	public DashboardPage signIn_remember(String email, String password) throws InterruptedException {
-		helper.setText(emailBox, email);
-		helper.setText(passwordBox, password);
-		helper.clickElement(loginBtn);
+		ActionKeys.setText(emailBox, email);
+		ActionKeys.setText(passwordBox, password);
+		ActionKeys.clickElement(loginBtn);
 		
-		return new DashboardPage(driver);
+		return new DashboardPage();
 	}
 
 	public DashboardPage signIn_quick() throws InterruptedException {
-		helper.clickElement(loginBtn);
+		ActionKeys.clickElement(loginBtn);
 		
-		return new DashboardPage(driver);
+		return new DashboardPage();
 	}
 	
 	public Boolean verifyPageTitle() {
 		String titleContains = "ABC Inc";
-		return helper.verifyPageTitle(titleContains);
+		return ActionKeys.verifyPageTitle(titleContains);
 	}
 
 	public Boolean verifyPageHeader() {
 		String headerExpected = "Sign in to your account";
-		return helper.verifyText(headerText,headerExpected);
+		return ActionKeys.verifyText(headerText,headerExpected);
 	}
 	
 	public Boolean verifyErrorPassword() {
-		return helper.verifyErrorField(passwordBox);
+		return ActionKeys.verifyErrorField(passwordBox);
 	}
 	
 	public Boolean verifyErrorEmail() {
-		return helper.verifyErrorField(emailBox);
+		return ActionKeys.verifyErrorField(emailBox);
 	}
 	
 	public Boolean verifyForgotPasswordLink() {
 		String expectedTextLink = "Forgot Password";
-		return helper.verifyText(forgotPwdLink, expectedTextLink);
+		return ActionKeys.verifyText(forgotPwdLink, expectedTextLink);
 	}
 	
 	public Boolean verifyErrorAlert(String errorMsg) {
-		return helper.verifyText(errorAlert, errorMsg);
+		return ActionKeys.verifyText(errorAlert, errorMsg);
 	}
 	
 	public Boolean verifySignUpText() {
 		String expectedTextLink = "Don't have an account? Sign Up";
-		return helper.verifyText(textSignUp, expectedTextLink);
+		return ActionKeys.verifyText(textSignUp, expectedTextLink);
 	}
 	
 	public ForgotPasswordPage goToForgotPasswordPage() {
-		helper.clickElement(forgotPwdLink);
-		return new ForgotPasswordPage(driver);
+		ActionKeys.clickElement(forgotPwdLink);
+		return new ForgotPasswordPage();
 	}
 	
 	public SignUpPage goToSignUpPage() {
-		helper.clickElement(signUpLink);
-		return new SignUpPage(driver);
+		ActionKeys.clickElement(signUpLink);
+		return new SignUpPage();
 	}
 }
