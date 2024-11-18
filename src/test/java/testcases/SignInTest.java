@@ -4,11 +4,13 @@ import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import base.helpers.ActionKeys;
+import base.listeners.ReportListener;
 import base.setup.BaseSetup;
 import base.setup.DataProviderFactory;
 import base.setup.DriverManager;
@@ -17,6 +19,7 @@ import pages.ForgotPasswordPage;
 import pages.SignInPage;
 import pages.SignUpPage;
 
+@Listeners(ReportListener.class)
 public class SignInTest extends BaseSetup {
 
 	private SignInPage signInPage;
