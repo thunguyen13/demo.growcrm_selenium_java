@@ -45,7 +45,7 @@ public class SignInTest extends BaseSetup {
 			signInPage = new SignInPage();
 		}
 		
-		ActionKeys.openURL("https://demo.growcrm.io/signup");
+		ActionKeys.openURL("https://demo.growcrm.io");
 	}
 
 	@Test(priority = 1)
