@@ -6,10 +6,14 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 
@@ -19,16 +23,13 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 public class BaseSetup {
 
 	private WebDriver driver;
-
-	// Return driver of this class
-//	public WebDriver getDriver(boolean isParallel) {
-//		driver = DriverManager.getDriver(isParallel);
-//		System.out.println("Current base setup driver: " + driver);
-//		return driver;
-//	}
+	private static volatile boolean isMethodsParallel = false;
+	private static volatile boolean isClassesParallel = false;
+	private static volatile boolean isTestsParallel = false;
+	private static volatile boolean isSequential =  false;
 
 	// Choose driver of browser
-	public void setDriver(boolean isParallel, String browserType, String appUrl) {
+	public void setDriver(String browserType, String appUrl) {
 		// System.out.println("Start setup driver: ");
 		switch (browserType) {
 			case "chrome":
@@ -82,38 +83,68 @@ public class BaseSetup {
 	}
 
 	// Run before each @Test
-	@Parameters({ "isParallel", "browserType", "appUrl" })
 	@BeforeMethod(alwaysRun = true)
-	public void initMethod(@Optional("true") boolean isParallel, @Optional("chrome") String browserType, String appUrl) {
-		if (isParallel) {
+	@Parameters({ "browserType", "appUrl" })
+	public void initMethod(@Optional("chrome") String browserType, String appUrl) {
+		if (isMethodsParallel) {
 			try {
 				// set driver before test
-				setDriver(isParallel, browserType, appUrl);
+				setDriver(browserType, appUrl);
 			} catch (Exception e) {
 				// TODO: handle exception
 				System.out.println("Error: " + e.getStackTrace());
 			}
+
 		}
 	}
 
 	// Run after each @Test
-	@Parameters({ "isParallel" })
 	@AfterMethod(alwaysRun = true)
-	public void teardownMethod(@Optional("true") boolean isParallel) {
-		if (isParallel) {
+	public void teardownMethod() {
+		if (isMethodsParallel) {
 			ActionKeys.sleep(2);
 			DriverManager.quit();
 		}
 	}
 	
 	// Run before each Class
-	@Parameters({ "isParallel", "browserType", "appUrl" })
-	@BeforeSuite(alwaysRun = true)
-	public void initClass(@Optional("true") boolean isParallel, @Optional("chrome") String browserType, String appUrl) {
-		if (!isParallel) {
+	@BeforeClass(alwaysRun = true)
+	@Parameters({ "browserType", "appUrl" })
+	public void initClass(@Optional("chrome") String browserType, String appUrl) {
+		if (isClassesParallel) {
 			try {
 				// set driver before test
-				setDriver(isParallel, browserType, appUrl);
+				setDriver(browserType, appUrl);
+			} catch (Exception e) {
+				// TODO: handle exception
+				System.out.println("Error: " + e.getStackTrace());
+			}
+
+		}
+	}
+
+	// Run after each Class
+	@AfterClass(alwaysRun = true)
+	public void teardownClass() {
+		if (isClassesParallel) {
+			ActionKeys.sleep(2);
+			DriverManager.quit();
+		}
+	}
+		
+	// Run before each Test
+	@BeforeTest(alwaysRun = true)
+	@Parameters({ "parallelMode", "browserType", "appUrl" })
+	public void initTest(@Optional("none") String parallelMode, @Optional("chrome") String browserType, String appUrl) {
+		
+		// check parallel mode
+		isClassesParallel = "classes".equals(parallelMode);
+		isMethodsParallel = "methods".equals(parallelMode);
+		
+		if (isTestsParallel) {
+			try {
+				// set driver before test
+				setDriver(browserType, appUrl);
 			} catch (Exception e) {
 				// TODO: handle exception
 				System.out.println("Error: " + e.getStackTrace());
@@ -121,11 +152,39 @@ public class BaseSetup {
 		}
 	}
 
-	// Run after each Class
-	@Parameters({ "isParallel" })
+	// Run after each Test
+	@AfterTest(alwaysRun = true)
+	public void teardownTest() throws InterruptedException {
+		if (isTestsParallel) {
+			ActionKeys.sleep(2);
+			DriverManager.quit();
+		}
+	}
+	
+	// Run before each Suite
+	@BeforeSuite(alwaysRun = true)
+	@Parameters({ "parallelMode", "browserType", "appUrl" })
+	public void initSuite(@Optional("none") String parallelMode, @Optional("chrome") String browserType, String appUrl) {
+
+		// check parallel mode
+		isSequential = "none".equals(parallelMode);
+		isTestsParallel = "tests".equals(parallelMode);
+
+		if (isSequential) {
+			try {
+				// set driver before test
+				setDriver(browserType, appUrl);
+			} catch (Exception e) {
+				// TODO: handle exception
+				System.out.println("Error: " + e.getStackTrace());
+			}
+		}
+	}
+
+	// Run after each Suite
 	@AfterSuite(alwaysRun = true)
-	public void teardownClass(@Optional("true") boolean isParallel) throws InterruptedException {
-		if (!isParallel) {
+	public void teardownSuite() throws InterruptedException {
+		if (isSequential) {
 			ActionKeys.sleep(2);
 			DriverManager.quit();
 		}
