@@ -18,6 +18,7 @@ import org.testng.annotations.Test;
 import com.google.common.base.Supplier;
 
 import base.helpers.ActionKeys;
+import base.helpers.PropertiesHelper;
 import base.listeners.ReportListener;
 import base.setup.BaseSetup;
 import base.setup.DataProviderFactory;
@@ -64,8 +65,7 @@ public class SignUpTest extends BaseSetup {
 			System.out.println("Sign Up driver (parallel): " + DriverManager.getDriver());
 			signUpPage = new SignUpPage();
 		}
-		
-		ActionKeys.openURL("https://demo.growcrm.io/signup");
+		ActionKeys.openURL(PropertiesHelper.getValue("signup.url"));
 	}
 
 	@Test
@@ -379,7 +379,7 @@ public class SignUpTest extends BaseSetup {
 
 	@AfterMethod(alwaysRun = true)
 	public void afterFinish1Case(ITestResult result) {
-		System.out.println("Finish 1 case and refresh page. Total: " + ++testCaseCounter);
+		System.out.println("SignUpTest - Finish 1 case and refresh page. Total: " + ++testCaseCounter);
 	}
 
 }

@@ -25,13 +25,9 @@ import base.setup.DriverManager;
 
 public class ActionKeys {
 
-//	private  WebDriver driver = null;
-//	private  WebDriverWait wait;
-//	private  JavascriptExecutor js;
-
-	private final static int TIME_OUT = 10;
-	private final static int PAGELOAD_TIME_OUT = 30;
-	private static double SLEEP_TIME = 0;
+	private final static int TIME_OUT = Integer.parseInt(PropertiesHelper.getValue("implicy.wait.timeout"));
+	private final static int PAGELOAD_TIME_OUT = Integer.parseInt(PropertiesHelper.getValue("page.load.timeout"));
+	//private static double SLEEP_TIME = 0;
 
 	private ActionKeys() {
 	}
@@ -42,7 +38,7 @@ public class ActionKeys {
 	
 	public static void sleep(double second) {
 		try {
-			Thread.sleep((long) (SLEEP_TIME * 1000));
+			Thread.sleep((long) (second * 1000));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			new RuntimeException(e);

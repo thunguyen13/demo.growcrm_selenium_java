@@ -18,6 +18,7 @@ import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 
 import base.helpers.ActionKeys;
+import base.helpers.PropertiesHelper;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class BaseSetup {
@@ -29,9 +30,9 @@ public class BaseSetup {
 	private static volatile boolean isSequential =  false;
 
 	// Choose driver of browser
-	public void setDriver(String browserType, String appUrl) {
+	public void setDriver(String browserName, String appUrl) {
 		// System.out.println("Start setup driver: ");
-		switch (browserType) {
+		switch (browserName) {
 			case "chrome":
 				driver = initChromeDriver(appUrl);
 				break;
@@ -42,7 +43,7 @@ public class BaseSetup {
 				driver = initEdgeDriver(appUrl);
 				break;
 			default:
-				System.out.println("Broswer Type: " + browserType + " is invalid. Launching Chrome browser as default.");
+				System.out.println("Broswer Type: " + browserName + " is invalid. Launching Chrome browser as default.");
 				driver = initChromeDriver(appUrl);
 				break;
 		}
@@ -84,12 +85,12 @@ public class BaseSetup {
 
 	// Run before each @Test
 	@BeforeMethod(alwaysRun = true)
-	@Parameters({ "browserType", "appUrl" })
-	public void initMethod(@Optional("chrome") String browserType, String appUrl) {
+	@Parameters({ "browserName", "appUrl" })
+	public void initMethod(@Optional("chrome") String browserName, String appUrl) {
 		if (isMethodsParallel) {
 			try {
 				// set driver before test
-				setDriver(browserType, appUrl);
+				setDriver(browserName, appUrl);
 			} catch (Exception e) {
 				// TODO: handle exception
 				System.out.println("Error: " + e.getStackTrace());
@@ -109,12 +110,12 @@ public class BaseSetup {
 	
 	// Run before each Class
 	@BeforeClass(alwaysRun = true)
-	@Parameters({ "browserType", "appUrl" })
-	public void initClass(@Optional("chrome") String browserType, String appUrl) {
+	@Parameters({ "browserName", "appUrl" })
+	public void initClass(@Optional("chrome") String browserName, String appUrl) {
 		if (isClassesParallel) {
 			try {
 				// set driver before test
-				setDriver(browserType, appUrl);
+				setDriver(browserName, appUrl);
 			} catch (Exception e) {
 				// TODO: handle exception
 				System.out.println("Error: " + e.getStackTrace());
@@ -134,8 +135,8 @@ public class BaseSetup {
 		
 	// Run before each Test
 	@BeforeTest(alwaysRun = true)
-	@Parameters({ "parallelMode", "browserType", "appUrl" })
-	public void initTest(@Optional("none") String parallelMode, @Optional("chrome") String browserType, String appUrl) {
+	@Parameters({ "parallelMode", "browserName", "appUrl" })
+	public void initTest(@Optional("none") String parallelMode, @Optional("chrome") String browserName, String appUrl) {
 		
 		// check parallel mode
 		isClassesParallel = "classes".equals(parallelMode);
@@ -144,7 +145,7 @@ public class BaseSetup {
 		if (isTestsParallel) {
 			try {
 				// set driver before test
-				setDriver(browserType, appUrl);
+				setDriver(browserName, appUrl);
 			} catch (Exception e) {
 				// TODO: handle exception
 				System.out.println("Error: " + e.getStackTrace());
@@ -163,17 +164,20 @@ public class BaseSetup {
 	
 	// Run before each Suite
 	@BeforeSuite(alwaysRun = true)
-	@Parameters({ "parallelMode", "browserType", "appUrl" })
-	public void initSuite(@Optional("none") String parallelMode, @Optional("chrome") String browserType, String appUrl) {
+	@Parameters({ "parallelMode", "browserName", "appUrl" })
+	public void initSuite(@Optional("none") String parallelMode, @Optional("chrome") String browserName, String appUrl) {
 
 		// check parallel mode
 		isSequential = "none".equals(parallelMode);
 		isTestsParallel = "tests".equals(parallelMode);
-
+		
+		PropertiesHelper.loadAllProperties();
+		
+		// Set sequential driver
 		if (isSequential) {
 			try {
 				// set driver before test
-				setDriver(browserType, appUrl);
+				setDriver(browserName, appUrl);
 			} catch (Exception e) {
 				// TODO: handle exception
 				System.out.println("Error: " + e.getStackTrace());
