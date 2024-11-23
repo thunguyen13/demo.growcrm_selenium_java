@@ -19,5 +19,7 @@ public class AllureReportManager {
 	public static byte[] saveScreenshot(WebDriver driver) {
 		return ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
 	}
+	
+	
 
 }

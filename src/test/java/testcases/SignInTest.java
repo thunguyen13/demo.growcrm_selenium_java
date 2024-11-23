@@ -10,6 +10,7 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import base.helpers.ActionKeys;
+import base.helpers.PropertiesHelper;
 import base.listeners.ReportListener;
 import base.setup.BaseSetup;
 import base.setup.DataProviderFactory;
@@ -48,7 +49,7 @@ public class SignInTest extends BaseSetup {
 			signInPage = new SignInPage();
 		}
 		
-		ActionKeys.openURL("https://demo.growcrm.io");
+		ActionKeys.openURL(PropertiesHelper.getValue("signin.url"));
 	}
 
 	@Test(priority = 1)
@@ -260,7 +261,7 @@ public class SignInTest extends BaseSetup {
 	@AfterMethod
 	public void afterFinish1Case() {
 		//driver.navigate().refresh();
-		System.out.println("Finish 1 case and refresh page. Total: " + ++testCaseCounter);
+		System.out.println("SignInTest - Finish 1 case and refresh page. Total: " + ++testCaseCounter);
 	}
 
 }
