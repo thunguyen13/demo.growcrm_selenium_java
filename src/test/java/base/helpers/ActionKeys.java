@@ -22,6 +22,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
 import base.setup.DriverManager;
+import base.utils.LogUtils;
 
 public class ActionKeys {
 
@@ -39,6 +40,7 @@ public class ActionKeys {
 	public static void sleep(double second) {
 		try {
 			Thread.sleep((long) (second * 1000));
+			LogUtils.info("Sleep " + second + " s.");
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			new RuntimeException(e);
@@ -47,11 +49,12 @@ public class ActionKeys {
 
 	public static void openURL(String url) {
 		DriverManager.getDriver().get(url);
+		LogUtils.info("Open URL: " + url);
 		waitForPageLoaded();
 	}
 	
 	public static void verifyTrue(Boolean booleanVal, String purpose, String msg) {
-		logConsole(purpose);
+		LogUtils.info("Verify true: " + purpose);
 		Assert.assertTrue(booleanVal, msg);
 	}
 	
@@ -66,7 +69,7 @@ public class ActionKeys {
 		} catch (Exception e) {
 			// TODO: handle exception
 			Assert.fail(e.getMessage());
-			logConsole("Timeout waiting for the element is visible: " + locator.toString());
+			LogUtils.error("Timeout waiting for the element is visible: " + locator.toString());
 			return null;
 		}
 	}
@@ -78,7 +81,7 @@ public class ActionKeys {
 		} catch (Exception e) {
 			// TODO: handle exception
 			Assert.fail(e.getMessage());
-			logConsole("Timeout waiting for the element is clickable: " + locator.toString());
+			LogUtils.error("Timeout waiting for the element is clickable: " + locator.toString());
 			return null;
 		}
 	}
@@ -90,7 +93,7 @@ public class ActionKeys {
 		} catch (Exception e) {
 			// TODO: handle exception
 			Assert.fail(e.getMessage());
-			logConsole("Timeout waiting for the element is presenced: " + locator.toString());
+			LogUtils.error("Timeout waiting for the element is presenced: " + locator.toString());
 			return null;
 		}
 	}
@@ -103,7 +106,7 @@ public class ActionKeys {
 		} catch (Exception e) {
 			// TODO: handle exception
 			Assert.fail(e.getMessage());
-			logConsole("Timeout waiting for elements are visible: " + locator.toString());
+			LogUtils.error("Timeout waiting for elements are visible: " + locator.toString());
 			return null;
 		}
 	}
@@ -113,12 +116,14 @@ public class ActionKeys {
 		scrollIntoViewElement(element);
 		element.clear();
 		element.sendKeys(value);
+		LogUtils.info("Set text: " + value + " into element with locator: " + locator);
 	}
 
 	public static void clickElement(By locator) {
 		WebElement element = getClickableElement(locator);
 		scrollIntoViewElement(element);
 		element.click();
+		LogUtils.info("Click on element with locator: " + locator);
 	}
 
 	public static void clickElementByJS(By locator) {
@@ -126,6 +131,7 @@ public class ActionKeys {
 		JavascriptExecutor js = (JavascriptExecutor) DriverManager.getDriver();
 		scrollIntoViewElement(element);
 		js.executeScript("arguments[0].click();", element);
+		LogUtils.info("Click on element with locator: " + locator);
 	}
 
 	public void toggleOption(By locator, Boolean shouldBe) {
@@ -134,13 +140,11 @@ public class ActionKeys {
 		Boolean isSelected = element.isSelected();
 
 		// Toggle option based on shouldBe parameter
-		if (shouldBe && !isSelected) {
-			scrollIntoViewElement(element);
-			element.click();
-		} else if (!shouldBe && isSelected) {
+		if (shouldBe != isSelected) {
 			scrollIntoViewElement(element);
 			element.click();
 		}
+		LogUtils.info("Choose element with locator: " + locator + "to be: " + shouldBe);
 	}
 
 	public static void chooseOneOptionFromDropdown(By preDropdownLocator, By dropdownLocator, By optionLocator) {
@@ -153,6 +157,7 @@ public class ActionKeys {
 		} else {
 			Assert.fail("Can not choose the option because the dropdown is not displayed.");
 		}
+		LogUtils.info("Choose element with locator: " + optionLocator + "in dropdown: " + dropdownLocator);
 	}
 
 	public static Boolean checkElementIsDisplayed(By locator) {
@@ -195,6 +200,7 @@ public class ActionKeys {
 			WebDriverWait waitPageLoad = new WebDriverWait(DriverManager.getDriver(), Duration.ofSeconds(PAGELOAD_TIME_OUT));
 			waitPageLoad.until(expectationForJQuery);
 			waitPageLoad.until(expectationForJS);
+			LogUtils.info("Wait for page load in: " + PAGELOAD_TIME_OUT + " s");
 			
 			// Especially on this web page, needing to ensure that the preloader div was disabled
 			By preloaderDiv = By.xpath("//div[@class='preloader']");
@@ -310,6 +316,7 @@ public class ActionKeys {
 
 			// Perform scrolling
 			js.executeScript("arguments[0].scrollIntoView({ behavior: 'smooth', block: 'start' });", preSiblingElement);
+			LogUtils.info("Scroll element: " + element + " into view");
 		}
 
 	}

@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Properties;
 
-import base.utils.SystemUtil;
+import base.utils.SystemUtils;
 
 public class PropertiesHelper {
 	private static Properties properties;
@@ -21,7 +21,7 @@ public class PropertiesHelper {
 		try {
 			properties = new Properties();
 			for (String filePath : allPaths) {
-				filePath = SystemUtil.createFilePath(filePath);
+				filePath = SystemUtils.createFilePath(filePath);
 				Properties tempProperties = new Properties();
 
 				try (FileInputStream file = new FileInputStream(filePath)) {
@@ -41,7 +41,7 @@ public class PropertiesHelper {
 
 	public static void loadFromFile(String filePath) {
 		properties = new Properties();
-		filePath = SystemUtil.createFilePath(filePath);
+		filePath = SystemUtils.createFilePath(filePath);
 		try (FileInputStream file = new FileInputStream(filePath)) {
 			properties.load(file);
 		} catch (FileNotFoundException e) {
@@ -55,7 +55,7 @@ public class PropertiesHelper {
 
 	public static void loadFromDefaultFile() {
 		properties = new Properties();
-		String filePath = SystemUtil.createFilePath(defaultFilePath);
+		String filePath = SystemUtils.createFilePath(defaultFilePath);
 		try (FileInputStream file = new FileInputStream(filePath)) {
 			properties.load(file);
 		} catch (FileNotFoundException e) {
@@ -72,7 +72,7 @@ public class PropertiesHelper {
 		// Initiate properties object and file path
 		try {
 			properties = new Properties();
-			String filePath = SystemUtil.createFilePath(defaultFilePath);
+			String filePath = SystemUtils.createFilePath(defaultFilePath);
 
 			// Read file content into properties
 			try (FileInputStream input = new FileInputStream(filePath)) {
@@ -102,7 +102,7 @@ public class PropertiesHelper {
 		try {
 			if(properties == null) {
 				properties = new Properties();
-				String filePath = SystemUtil.createFilePath(defaultFilePath);
+				String filePath = SystemUtils.createFilePath(defaultFilePath);
 				try (FileInputStream input = new FileInputStream(filePath)) {
 					properties.load(input);
 				}

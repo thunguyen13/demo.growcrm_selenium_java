@@ -7,15 +7,15 @@ import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 
 import base.helpers.PropertiesHelper;
-import base.utils.StampUtil;
-import base.utils.SystemUtil;
+import base.utils.StampUtils;
+import base.utils.SystemUtils;
 
 public class ExtentReportManager {
 	private static final ExtentReports extentReports = new ExtentReports();
-	private static final String datetime = StampUtil.getCurrentDateTimestamp();
+	private static final String datetime = StampUtils.getCurrentDateTimestamp();
 
 	public synchronized static ExtentReports getExtentReports() {
-		String filePath = SystemUtil.createFilePath(PropertiesHelper.getValue("extent.report.path"))
+		String filePath = SystemUtils.createFilePath(PropertiesHelper.getValue("extent.report.path"))
 						  + File.separator + "extentReports_" + datetime + ".html";
 		ExtentSparkReporter reporter = new ExtentSparkReporter(filePath); // ./././output/reports/extentReports_" + datetime + ".html
 		// Set the name of the report
