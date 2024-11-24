@@ -19,6 +19,7 @@ import org.testng.annotations.Parameters;
 
 import base.helpers.ActionKeys;
 import base.helpers.PropertiesHelper;
+import base.utils.LogUtils;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class BaseSetup {
@@ -31,7 +32,7 @@ public class BaseSetup {
 
 	// Choose driver of browser
 	public void setDriver(String browserName, String appUrl) {
-		// System.out.println("Start setup driver: ");
+		// LogUtils.error("Start setup driver: ");
 		switch (browserName) {
 			case "chrome":
 				driver = initChromeDriver(appUrl);
@@ -43,7 +44,7 @@ public class BaseSetup {
 				driver = initEdgeDriver(appUrl);
 				break;
 			default:
-				System.out.println("Broswer Type: " + browserName + " is invalid. Launching Chrome browser as default.");
+				LogUtils.error("Broswer Type: " + browserName + " is invalid. Launching Chrome browser as default.");
 				driver = initChromeDriver(appUrl);
 				break;
 		}
@@ -62,7 +63,7 @@ public class BaseSetup {
 	private WebDriver initChromeDriver(String appUrl) {
 		// TODO Auto-generated method stub
 		WebDriver _driver;
-		System.out.println("Lauching Chrome browser...");
+		LogUtils.error("Lauching Chrome browser...");
 		System.setProperty("webdriver.chrome.driver", "D:\\automation\\driver\\chromedriver-win64\\chromedriver.exe");
 		_driver = new ChromeDriver();
 		return _driver;
@@ -70,7 +71,7 @@ public class BaseSetup {
 
 	private WebDriver initFirefoxDriver(String appUrl) {
 		WebDriver _driver;
-		System.out.println("Lauching Firefox browser...");
+		LogUtils.error("Lauching Firefox browser...");
 		WebDriverManager.firefoxdriver().setup();
 		_driver = new FirefoxDriver();
 		return _driver;
@@ -78,7 +79,7 @@ public class BaseSetup {
 
 	private WebDriver initEdgeDriver(String appUrl) {
 		WebDriver _driver;
-		System.out.println("Lauching Edge browser...");
+		LogUtils.error("Lauching Edge browser...");
 		_driver = new EdgeDriver();
 		return _driver;
 	}
@@ -93,7 +94,7 @@ public class BaseSetup {
 				setDriver(browserName, appUrl);
 			} catch (Exception e) {
 				// TODO: handle exception
-				System.out.println("Error: " + e.getStackTrace());
+				LogUtils.error("Error: " + e.getStackTrace());
 			}
 
 		}
@@ -118,7 +119,7 @@ public class BaseSetup {
 				setDriver(browserName, appUrl);
 			} catch (Exception e) {
 				// TODO: handle exception
-				System.out.println("Error: " + e.getStackTrace());
+				LogUtils.error("Error: " + e.getStackTrace());
 			}
 
 		}
@@ -148,7 +149,7 @@ public class BaseSetup {
 				setDriver(browserName, appUrl);
 			} catch (Exception e) {
 				// TODO: handle exception
-				System.out.println("Error: " + e.getStackTrace());
+				LogUtils.error("Error: " + e.getStackTrace());
 			}
 		}
 	}
@@ -180,7 +181,7 @@ public class BaseSetup {
 				setDriver(browserName, appUrl);
 			} catch (Exception e) {
 				// TODO: handle exception
-				System.out.println("Error: " + e.getStackTrace());
+				LogUtils.error("Error: " + e.getStackTrace());
 			}
 		}
 	}
@@ -192,7 +193,7 @@ public class BaseSetup {
 			ActionKeys.sleep(2);
 			DriverManager.quit();
 		}
-		System.out.println("Location of Allure: " + System.getProperty("allure.results.directory"));
+		LogUtils.error("Location of Allure: " + System.getProperty("allure.results.directory"));
 	}
 
 }

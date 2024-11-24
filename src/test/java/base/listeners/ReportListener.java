@@ -15,6 +15,7 @@ import base.reports.AllureReportManager;
 import base.reports.ExtentReportManager;
 import base.reports.ExtentTestManager;
 import base.setup.DriverManager;
+import base.utils.LogUtils;
 import io.qameta.allure.listener.TestLifecycleListener;
 import io.qameta.allure.model.TestResult;
 
@@ -52,6 +53,7 @@ public class ReportListener implements ITestListener, TestLifecycleListener{
 	public void onTestStart(ITestResult result) {
 		// TODO Auto-generated method stub
 		//ITestListener.super.onTestStart(result);
+		LogUtils.info("=== Start test case: " + getTestName(result) + " ===");
 		ExtentTestManager.saveToReport(getTestName(result), getTestDescription(result));
 		try {
 			CaptureHelper getScreenRecorder = CaptureHelper.getScreenRecorder(result.getMethod());
@@ -82,6 +84,7 @@ public class ReportListener implements ITestListener, TestLifecycleListener{
 		AllureReportManager.saveScreenshot(DriverManager.getDriver());
 		
 		stopRecorder();
+		LogUtils.error("===> Test case: " + getTestName(result) + " is FAILED");
 	}
 	
 	@Override
@@ -97,6 +100,7 @@ public class ReportListener implements ITestListener, TestLifecycleListener{
 		AllureReportManager.saveTextLog(message);
 		
 		stopRecorder();
+		LogUtils.info("===> Test case: " + getTestName(result) + " is SKIPPED");
 	}
 	
 	@Override
@@ -114,6 +118,7 @@ public class ReportListener implements ITestListener, TestLifecycleListener{
 		AllureReportManager.saveScreenshot(DriverManager.getDriver());
 		
 		stopRecorder();
+		LogUtils.info("===> Test case: " + getTestName(result) + " is SUCCESSFUL");
 	}
 	
 	@Override

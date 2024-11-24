@@ -34,7 +34,7 @@ import org.openqa.selenium.WebDriver;
 import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
 
-import base.utils.StampUtil;
+import base.utils.StampUtils;
 
 public class CaptureHelper extends ScreenRecorder{
 	
@@ -61,7 +61,7 @@ public class CaptureHelper extends ScreenRecorder{
 		}
 		
 		//Generate file name with date, time, extension
-		String dateTime = StampUtil.getCurrentDateTimestamp();
+		String dateTime = StampUtils.getCurrentDateTimestamp();
 		String extension = Registry.getInstance().getExtension(fileFormat);
 		String fileName = String.format("%s_%d_%s.%s", name, count,dateTime,extension);
 		return new File(movieFolder,fileName);
@@ -69,7 +69,7 @@ public class CaptureHelper extends ScreenRecorder{
 	
 	public static CaptureHelper getScreenRecorder(ITestNGMethod method) throws IOException, AWTException {
 		//Set up folder for recorded video
-		String folderPath = "././output/record/" + StampUtil.getCurrentDatestamp();
+		String folderPath = "././output/record/" + StampUtils.getCurrentDatestamp();
 		File folder = new File(folderPath);
 		
 		//Get screen dimensions to define screen size for the record
@@ -101,11 +101,11 @@ public class CaptureHelper extends ScreenRecorder{
 		File scrFile = screenshot.getScreenshotAs(OutputType.FILE);
 		
 		//Define the path to where the file is saved
-		String date = StampUtil.getCurrentDatestamp();
+		String date = StampUtils.getCurrentDatestamp();
 		String directoryPath = "././output/screenshot/" + date;
 		Path directory = Paths.get(directoryPath);
 		
-		String timestamp = StampUtil.getCurrentTimeStamp();
+		String timestamp = StampUtils.getCurrentTimeStamp();
 		String methodNameAndInvocationCount = result.getMethod().getMethodName() + "_" + result.getMethod().getCurrentInvocationCount();
 		String fileName = methodNameAndInvocationCount + "_" + timestamp + ".png";
 		Path desFile = directory.resolve(fileName);
