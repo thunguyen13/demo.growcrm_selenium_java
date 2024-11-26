@@ -50,11 +50,19 @@ public class ReportListener implements ITestListener, TestLifecycleListener{
 	}
 	
 	@Override
+	public void beforeTestWrite(TestResult result) {
+		// TODO Auto-generated method stub
+		String testName = result.getFullName();
+		String testDescription = result.getDescription();
+		ExtentTestManager.saveToReport(testName, testDescription);
+		ExtentTestManager.logMessage(Status.INFO,"=== Start test case: " + testName + " ===");
+	}
+	
+	@Override
 	public void onTestStart(ITestResult result) {
 		// TODO Auto-generated method stub
 		//ITestListener.super.onTestStart(result);
 		LogUtils.info("=== Start test case: " + getTestName(result) + " ===");
-		ExtentTestManager.saveToReport(getTestName(result), getTestDescription(result));
 		try {
 			CaptureHelper getScreenRecorder = CaptureHelper.getScreenRecorder(result.getMethod());
 			screenRecorder.set(getScreenRecorder);
@@ -84,6 +92,8 @@ public class ReportListener implements ITestListener, TestLifecycleListener{
 		AllureReportManager.saveScreenshot(DriverManager.getDriver());
 		
 		stopRecorder();
+		
+		ExtentTestManager.logMessage(Status.FAIL,"===> Test case: " + getTestName(result) + " is FAILED");
 		LogUtils.error("===> Test case: " + getTestName(result) + " is FAILED");
 	}
 	
@@ -94,12 +104,14 @@ public class ReportListener implements ITestListener, TestLifecycleListener{
 		String message = getTestName(result) + " is skipped.";
 		
 		//Extent Report
-		ExtentTestManager.logMessage(Status.SKIP, message, DriverManager.getDriver());
+		ExtentTestManager.logMessage(Status.SKIP, message);
 		
 		//Allure report
 		AllureReportManager.saveTextLog(message);
 		
 		stopRecorder();
+		
+		ExtentTestManager.logMessage(Status.SKIP,"===> Test case: " + getTestName(result) + " is SKIPPED");
 		LogUtils.info("===> Test case: " + getTestName(result) + " is SKIPPED");
 	}
 	
@@ -118,6 +130,8 @@ public class ReportListener implements ITestListener, TestLifecycleListener{
 		AllureReportManager.saveScreenshot(DriverManager.getDriver());
 		
 		stopRecorder();
+		
+		ExtentTestManager.logMessage(Status.PASS,"===> Test case: " + getTestName(result) + " is SUCCESSFUL");
 		LogUtils.info("===> Test case: " + getTestName(result) + " is SUCCESSFUL");
 	}
 	
@@ -132,5 +146,5 @@ public class ReportListener implements ITestListener, TestLifecycleListener{
 			}
 		}
 	}
-	
+
 }

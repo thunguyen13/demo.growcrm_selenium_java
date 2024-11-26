@@ -21,8 +21,12 @@ import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
+import com.aventstack.extentreports.Status;
+
+import base.reports.ExtentTestManager;
 import base.setup.DriverManager;
 import base.utils.LogUtils;
+import io.qameta.allure.Step;
 
 public class ActionKeys {
 
@@ -41,25 +45,32 @@ public class ActionKeys {
 		try {
 			Thread.sleep((long) (second * 1000));
 			LogUtils.info("Sleep " + second + " s.");
+			ExtentTestManager.logMessage("Sleep " + second + " s.");
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			new RuntimeException(e);
 		}
 	}
 
+	@Step("Open URL: {0}")
 	public static void openURL(String url) {
 		DriverManager.getDriver().get(url);
 		LogUtils.info("Open URL: " + url);
+		ExtentTestManager.logMessage("Open URL: " + url);
 		waitForPageLoaded();
 	}
 	
+	@Step("Verify true: {1}")
 	public static void verifyTrue(Boolean booleanVal, String purpose, String msg) {
-		LogUtils.info("Verify true: " + purpose);
 		Assert.assertTrue(booleanVal, msg);
+		LogUtils.info("Verify true: " + purpose);
+		ExtentTestManager.logMessage(Status.PASS,"Verify true: " + purpose);
 	}
 	
+	@Step("Verify true")
 	public static void verifyTrue(Boolean booleanVal, String msg) {
 		Assert.assertTrue(booleanVal, msg);
+		//ExtentTestManager.logMessage(Status.PASS,"Verify true");
 	}
 	
 	public static WebElement getVisibleElement(By locator) {
@@ -68,8 +79,9 @@ public class ActionKeys {
 			return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
 		} catch (Exception e) {
 			// TODO: handle exception
-			Assert.fail(e.getMessage());
 			LogUtils.error("Timeout waiting for the element is visible: " + locator.toString());
+			ExtentTestManager.logMessage(Status.FAIL,"Timeout waiting for the element is visible: " + locator.toString());
+			Assert.fail(e.getMessage());
 			return null;
 		}
 	}
@@ -80,8 +92,9 @@ public class ActionKeys {
 			return wait.until(ExpectedConditions.elementToBeClickable(locator));
 		} catch (Exception e) {
 			// TODO: handle exception
-			Assert.fail(e.getMessage());
 			LogUtils.error("Timeout waiting for the element is clickable: " + locator.toString());
+			ExtentTestManager.logMessage(Status.FAIL,"Timeout waiting for the element is clickable: " + locator.toString());
+			Assert.fail(e.getMessage());
 			return null;
 		}
 	}
@@ -92,8 +105,9 @@ public class ActionKeys {
 			return wait.until(ExpectedConditions.presenceOfElementLocated(locator));
 		} catch (Exception e) {
 			// TODO: handle exception
-			Assert.fail(e.getMessage());
 			LogUtils.error("Timeout waiting for the element is presenced: " + locator.toString());
+			ExtentTestManager.logMessage(Status.FAIL,"Timeout waiting for the element is presenced: " + locator.toString());
+			Assert.fail(e.getMessage());
 			return null;
 		}
 	}
@@ -105,35 +119,43 @@ public class ActionKeys {
 			return listElement;
 		} catch (Exception e) {
 			// TODO: handle exception
-			Assert.fail(e.getMessage());
 			LogUtils.error("Timeout waiting for elements are visible: " + locator.toString());
+			ExtentTestManager.logMessage(Status.FAIL,"Timeout waiting for elements are visible: " + locator.toString());
+			Assert.fail(e.getMessage());
 			return null;
 		}
 	}
 
+	@Step("Set text: '{1}' into element with locator: {0}")
 	public static void setText(By locator, String value) {
 		WebElement element = getClickableElement(locator);
 		scrollIntoViewElement(element);
 		element.clear();
 		element.sendKeys(value);
 		LogUtils.info("Set text: " + value + " into element with locator: " + locator);
+		ExtentTestManager.logMessage("Set text: '" + value + "' into element with locator: " + locator);
 	}
 
+	@Step("Click on element with locator: {0}")
 	public static void clickElement(By locator) {
 		WebElement element = getClickableElement(locator);
 		scrollIntoViewElement(element);
 		element.click();
 		LogUtils.info("Click on element with locator: " + locator);
+		ExtentTestManager.logMessage("Click on element with locator: " + locator);
 	}
 
+	@Step("Click on element with locator: {0}")
 	public static void clickElementByJS(By locator) {
 		WebElement element = getPresenceElement(locator);
 		JavascriptExecutor js = (JavascriptExecutor) DriverManager.getDriver();
 		scrollIntoViewElement(element);
 		js.executeScript("arguments[0].click();", element);
 		LogUtils.info("Click on element with locator: " + locator);
+		ExtentTestManager.logMessage("Click on element with locator: " + locator);
 	}
 
+	@Step("Choose element with locator: {0} to be: {1}")
 	public void toggleOption(By locator, Boolean shouldBe) {
 		// Check if the element is selected
 		WebElement element = getClickableElement(locator);
@@ -145,8 +167,10 @@ public class ActionKeys {
 			element.click();
 		}
 		LogUtils.info("Choose element with locator: " + locator + "to be: " + shouldBe);
+		ExtentTestManager.logMessage("Choose element with locator: " + locator + "to be: " + shouldBe);
 	}
 
+	@Step("Choose element with locator: {2} in dropdown: {1}")
 	public static void chooseOneOptionFromDropdown(By preDropdownLocator, By dropdownLocator, By optionLocator) {
 		WebElement preDropdownElement = getVisibleElement(preDropdownLocator);
 		preDropdownElement.click();
@@ -155,9 +179,13 @@ public class ActionKeys {
 			scrollIntoViewElement(optionChoice);
 			optionChoice.click();
 		} else {
+			LogUtils.error("Can not choose the option because the dropdown: " + dropdownLocator + "is not displayed.");
+			ExtentTestManager.logMessage("Can not choose the option because the dropdown: " + dropdownLocator + "is not displayed.");
 			Assert.fail("Can not choose the option because the dropdown is not displayed.");
 		}
 		LogUtils.info("Choose element with locator: " + optionLocator + "in dropdown: " + dropdownLocator);
+		ExtentTestManager.logMessage("Choose element with locator: " + optionLocator + "in dropdown: " + dropdownLocator);
+
 	}
 
 	public static Boolean checkElementIsDisplayed(By locator) {
@@ -170,6 +198,7 @@ public class ActionKeys {
 		}
 	}
 
+	@Step("Wait for page load")
 	public static void waitForPageLoaded() {
 		// Condition wait for JS load
 		ExpectedCondition<Boolean> expectationForJS = new ExpectedCondition<Boolean>() {
@@ -201,13 +230,15 @@ public class ActionKeys {
 			waitPageLoad.until(expectationForJQuery);
 			waitPageLoad.until(expectationForJS);
 			LogUtils.info("Wait for page load in: " + PAGELOAD_TIME_OUT + " s");
+			ExtentTestManager.logMessage("Wait for page load in: " + PAGELOAD_TIME_OUT + " s");
 			
 			// Especially on this web page, needing to ensure that the preloader div was disabled
 			By preloaderDiv = By.xpath("//div[@class='preloader']");
 			waitPageLoad.until(ExpectedConditions.attributeContains(preloaderDiv, "style", "display: none;"));
 		} catch (Throwable error) {
 			// TODO: handle exception
-			System.out.println("Timeout for wait page load. " + error.getMessage());
+			LogUtils.info("Timeout for wait page load. " + error.getMessage());
+			ExtentTestManager.logMessage(Status.FAIL,"Timeout for wait page load. " + error.getMessage());
 			Assert.fail("PAGE LOAD TIMEOUT. " + error.getMessage());
 		}
 	}
@@ -284,6 +315,7 @@ public class ActionKeys {
 		return false;
 	}
 
+	@Step("Scroll element: {0] into view")
 	public static void scrollIntoViewElement(WebElement element) {
 
 		// Check if the element is in a scrollable viewport
@@ -317,6 +349,7 @@ public class ActionKeys {
 			// Perform scrolling
 			js.executeScript("arguments[0].scrollIntoView({ behavior: 'smooth', block: 'start' });", preSiblingElement);
 			LogUtils.info("Scroll element: " + element + " into view");
+			ExtentTestManager.logMessage("Scroll element: " + element + " into view");
 		}
 
 	}
